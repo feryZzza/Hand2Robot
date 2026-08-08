@@ -1,7 +1,7 @@
 # Hand2Robot project memory
 
 Last verified: 2026-08-08 (Asia/Shanghai)  
-Current milestone: M1 — shared-contract definition  
+Current milestone: M2 — local CPU input loop  
 Canonical remote: `https://github.com/feryZzza/Hand2Robot.git`
 
 This document is the concise, version-controlled memory for future work. It records verified
@@ -33,6 +33,9 @@ reproduction checklist.
   initialized and was pushed to `main` on 2026-08-08.
 - Stable branch `main` and local integration branch `work/local` both exist on `origin`.
   `work/local` was created from verified M0 memory commit `d78e063`.
+- Contract commit `3fb0f80` defines schema `0.1.0`, four ROS2 messages, the 21-joint order,
+  timestamp/validity/QoS rules, and frame transform direction. Five contract tests and the
+  ROS2 `hand_msgs` build passed locally.
 
 ## Accepted decisions
 
@@ -47,10 +50,8 @@ reproduction checklist.
 
 ## Current objectives
 
-1. Define version 0.1 drafts for `HandObservation`, `RobotTarget`, `SystemStatus`, and
-   `EpisodeRecord`.
-2. Implement a CPU-only ROS2 synthetic-input-to-diagnostics smoke path.
-3. Obtain `docs/handoff/server_latest.md` populated from a read-only RTX 4090 server audit.
+1. Implement a CPU-only ROS2 synthetic-input-to-diagnostics smoke path.
+2. Obtain `docs/handoff/server_latest.md` populated from a read-only RTX 4090 server audit.
 
 ## Pending verification
 
@@ -60,6 +61,8 @@ reproduction checklist.
   frozen until server asset and license checks pass.
 - Camera availability and MediaPipe package availability. Validation is deferred until after
   the synthetic CPU baseline.
+- Repository code license. The initial ROS2 package uses `TODO` until the user selects a license;
+  no external code or asset should be added under an assumed license.
 
 ## Risks and stop conditions
 
@@ -72,9 +75,9 @@ reproduction checklist.
 
 ## Next actions
 
-1. Draft and review interface and frame contracts as a separate `contract:` commit.
-2. Create ROS2 `hand_msgs` plus synthetic publisher and validator packages.
-3. Add deterministic CPU tests for valid and malformed observations.
+1. Create the ROS-agnostic validation core and ROS2 synthetic publisher/validator packages.
+2. Add deterministic CPU tests for valid and malformed observations.
+3. Run a local ROS2 smoke check and record message counts and diagnostics.
 
 ## Memory update rules
 

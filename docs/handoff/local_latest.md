@@ -1,9 +1,9 @@
 # Local handoff
 
 - Updated: 2026-08-08 (Asia/Shanghai)
-- Git base: `d78e063` (`main`, pushed to `origin/main`)
+- Git commit: `3fb0f80` (`work/local`, pending push with this handoff update)
 - Branch: `work/local` (pushed and tracking `origin/work/local`)
-- Schema version: draft `0.1.0`
+- Schema version: accepted `0.1.0`
 - Disk: `/` approximately 4.1 GiB free; `/home` approximately 24 GiB free
 - Input: no camera detected; synthetic input is the planned baseline
 
@@ -14,10 +14,12 @@
 - Established repository memory, ADR, handoff, Git workflow, and safety rules.
 - Ran the read-only local doctor and pushed the verified M0 baseline to GitHub.
 - Created the protected local integration path through `work/local`.
+- Defined and compiled the four ROS2 interfaces and accepted the frame/transform contract.
 
 ## Local verification
 
 - ROS2 Humble and colcon commands are available.
+- Five contract-definition tests pass; `hand_msgs` builds and is discoverable by ROS2.
 - No model, dataset, virtual environment, or system package was installed.
 
 ## Uploaded files and checksums
@@ -36,4 +38,4 @@ simulation work.
 
 ## Next step
 
-Freeze the shared interface and frame contract, then build the local CPU synthetic smoke loop.
+Build the local CPU synthetic publisher, validator, diagnostics, and smoke check.

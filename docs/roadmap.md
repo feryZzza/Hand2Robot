@@ -6,8 +6,8 @@ acceptance evidence is committed or referenced by a checksum-bearing manifest.
 | Milestone | Status | Outcome | Acceptance gate |
 |---|---|---|---|
 | M0 Repository foundation | VERIFIED | Git, memory, workflow, skeleton | `make doctor`; baseline on `main`; `work/local` pushed from `d78e063` |
-| M1 Shared contracts | TODO | Messages, schemas, frames, units | Contract docs, samples, and validation tests agree |
-| M2 Local CPU input loop | TODO | Synthetic/recorded input to diagnostics | Deterministic smoke test; malformed inputs diagnosed |
+| M1 Shared contracts | VERIFIED | Messages, schemas, frames, units | Commit `3fb0f80`; 5 contract tests and rosidl build pass |
+| M2 Local CPU input loop | IN PROGRESS | Synthetic/recorded input to diagnostics | Deterministic smoke test; malformed inputs diagnosed |
 | M3 Capture and replay | TODO | Camera/MediaPipe/short rosbag | Input changes by config; two replays agree |
 | M4 Calibration and retargeting | TODO | TF, scale, filtering, IK/safety | TF and limit tests; reachable IK target at least 95% |
 | M5 Server simulation loop | TODO | Isaac Sim headless and ROS2 bridge | 1000 steps plus five-minute stable run |
@@ -17,6 +17,5 @@ acceptance evidence is committed or referenced by a checksum-bearing manifest.
 
 ## Immediate build queue
 
-1. Define M1 as a dedicated `contract:` change.
-2. Build the smallest M2 path: synthetic publisher → validator → system diagnostics.
-3. Request and review the independent GPU-server audit before starting M5.
+1. Build the smallest M2 path: synthetic publisher → validator → system diagnostics.
+2. Request and review the independent GPU-server audit before starting M5.
