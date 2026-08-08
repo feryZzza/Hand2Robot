@@ -89,6 +89,9 @@ residual_rotation_rad: <value>
 Consumers reject a non-unit quaternion, non-finite value, unknown frame, reversed parent/child
 pair, unsupported schema, or calibration outside its declared validity conditions.
 
+The committed `synthetic_camera_to_robot_v0.1.json` file is a unit-test fixture, not a measured
+camera calibration. Real calibration files must use a distinct source and measured residuals.
+
 ## Required tests
 
 - identity, inverse, and composition order for `T_A_B`;

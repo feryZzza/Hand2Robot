@@ -14,6 +14,12 @@ from .recorded_sequence import (
     RecordedSequence,
     load_recorded_sequence,
 )
+from .geometry import RigidTransform
+from .calibration import (
+    CalibrationRecord,
+    load_calibration,
+    transform_observation_points,
+)
 
 __all__ = [
     "EXPECTED_SCHEMA_VERSION",
@@ -26,4 +32,8 @@ __all__ = [
     "RecordedPose",
     "RecordedSequence",
     "load_recorded_sequence",
+    "RigidTransform",
+    "CalibrationRecord",
+    "load_calibration",
+    "transform_observation_points",
 ]

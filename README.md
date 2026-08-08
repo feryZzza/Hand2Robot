@@ -68,6 +68,7 @@ under ignored `local_data/tmp/` storage.
 - [Coordinate-frame contract](docs/frames.md)
 - [Current architecture](docs/architecture.md)
 - [Recorded-sequence format](docs/recorded_sequence.md)
+- [Calibration foundation](docs/calibration.md)
 - [Architecture decisions](docs/decisions/README.md)
 - [Local/server handoff](docs/handoff/README.md)
 
