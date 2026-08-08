@@ -1,3 +1,5 @@
+[English](architecture.md) | [简体中文](architecture.zh-CN.md)
+
 # Architecture
 
 Status: verified local CPU prototype; server execution boundary pending.

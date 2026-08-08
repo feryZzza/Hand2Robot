@@ -1,3 +1,5 @@
+[English](calibration.md) | [简体中文](calibration.zh-CN.md)
+
 # Calibration foundation
 
 Status: M4 CPU foundation; no real camera calibration has been claimed.
@@ -16,6 +18,7 @@ identity rotation plus translation `[0.5, 0.0, 0.8]` metres. It is not measured 
 must never be used as a real robot calibration. Applied to the recorded wrist point
 `[0.0, 0.06, 0.45]`, it yields `[0.5, 0.06, 1.25]` in `robot_base`.
 
-The current boundary transforms all valid 3D points and returns zeros for masked points. It does
-not yet produce `RobotTarget`; scale normalization, palm basis, filtering, workspace limits, and
-IK remain separate downstream steps.
+The calibration boundary transforms all valid 3D points and returns zeros for masked points. The
+downstream CPU prototype now adds scale normalization, a palm basis, filtering, workspace and
+rate limits, and `RobotTarget` publication. Real camera calibration, asset-specific IK, and
+collision validation remain pending.

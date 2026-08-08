@@ -1,3 +1,5 @@
+[English](server_latest.md) | [简体中文](server_latest.zh-CN.md)
+
 # Server handoff
 
 - Updated: not yet provided

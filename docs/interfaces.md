@@ -1,3 +1,5 @@
+[English](interfaces.md) | [简体中文](interfaces.zh-CN.md)
+
 # Shared interfaces
 
 Status: accepted for M1, schema version `0.1.0`.

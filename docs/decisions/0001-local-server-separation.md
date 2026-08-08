@@ -1,3 +1,5 @@
+[English](0001-local-server-separation.md) | [简体中文](0001-local-server-separation.zh-CN.md)
+
 # ADR-0001: Separate local interaction from server compute
 
 - Status: Accepted

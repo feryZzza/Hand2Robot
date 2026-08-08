@@ -1,3 +1,5 @@
+[English](local_latest.md) | [简体中文](local_latest.zh-CN.md)
+
 # Local handoff
 
 - Updated: 2026-08-08 (Asia/Shanghai)
@@ -26,11 +28,13 @@
   and a fail-closed stale-input watchdog.
 - Added `/robot/target`, `/episode/record`, sequence alignment, JSONL persistence, a full launch,
   and finite synthetic, recorded, and interrupted-source acceptance scripts.
+- Added 22 Simplified Chinese document counterparts, reciprocal language switches, and an
+  automated localization completeness test.
 
 ## Local verification
 
 - ROS2 Humble and colcon commands are available.
-- Fifty-eight unit/contract tests pass; all three ROS2 packages build.
+- Fifty-nine unit/contract/documentation tests pass; all three ROS2 packages build.
 - Final M2 smoke: 15 valid, 0 invalid, 0 dropped, 30 Hz, last sampled latency 3.21 ms.
 - Fault smoke: 0 valid, 9 invalid, state `DEGRADED`, error `low_confidence`.
 - Recorded smoke: exactly 5 frames with sequences 0–4, 0 invalid, and 0 dropped.

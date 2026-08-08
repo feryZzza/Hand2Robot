@@ -1,3 +1,5 @@
+[English](AGENTS.md) | [简体中文](AGENTS.zh-CN.md)
+
 # Hand2Robot repository instructions
 
 This file is the persistent operating contract for contributors and coding agents.
@@ -39,6 +41,9 @@ documents are examples and must not override the actual checkout location.
   checkpoints, model weights, ROS build products, or generated caches.
 - Push only coherent, verified milestones. Record the pushed commit in the appropriate
   handoff file.
+- Every English Markdown project document outside the already-Chinese `doc/` requirements must
+  have a same-directory `.zh-CN.md` translation. Keep the language switch on line 1 and update
+  both versions in the same commit.
 
 See `docs/git_workflow.md` for detailed branch and release rules.
 

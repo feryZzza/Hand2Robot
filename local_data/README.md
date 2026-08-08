@@ -1,3 +1,5 @@
+[English](README.md) | [简体中文](README.zh-CN.md)
+
 # Local data area
 
 This directory is intentionally excluded from Git except for this policy file. Store only the

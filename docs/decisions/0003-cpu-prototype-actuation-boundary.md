@@ -1,3 +1,5 @@
+[English](0003-cpu-prototype-actuation-boundary.md) | [简体中文](0003-cpu-prototype-actuation-boundary.zh-CN.md)
+
 # ADR-0003: Keep the local target executable only by a CPU test sink
 
 - Status: Accepted

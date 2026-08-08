@@ -1,3 +1,5 @@
+[English](reproduction.md) | [简体中文](reproduction.zh-CN.md)
+
 # Local CPU prototype reproduction
 
 ## Preconditions
@@ -27,7 +29,7 @@ make smoke-prototype-watchdog
 
 Expected prototype evidence:
 
-- 58 dependency-free unit/contract tests pass;
+- 59 dependency-free unit/contract/documentation tests pass;
 - all three ROS2 packages build;
 - synthetic mode produces 20 complete paired records with valid bounded targets;
 - recorded mode produces exactly sequences 0–4 as five complete paired records;

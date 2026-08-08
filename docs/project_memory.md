@@ -1,3 +1,5 @@
+[English](project_memory.md) | [简体中文](project_memory.zh-CN.md)
+
 # Hand2Robot project memory
 
 Last verified: 2026-08-08 (Asia/Shanghai)  
@@ -67,6 +69,9 @@ reproduction checklist.
   with sequences 0–4, and one stale invalid target after 29 observed valid targets. The One Euro
   deterministic jitter ratio was 0.106169. Evidence is in
   `runs/20260808_local_cpu_prototype_seed0/manifest.yaml`.
+- All 22 English Markdown project documents have same-directory Simplified Chinese translations
+  with reciprocal language links. The localization test enforces this policy; the full suite now
+  contains 59 tests.
 
 ## Accepted decisions
 
@@ -81,6 +86,8 @@ reproduction checklist.
 - ADR-0003 limits the generic five-flexion target to a CPU test sink. It is not a physical or
   Isaac Sim command contract; asset-specific names, IK, joint limits, and collisions are a
   server-side acceptance gate.
+- English and Simplified Chinese Markdown pairs are maintained together and checked in CI-style
+  local tests; the already-Chinese original requirements under `doc/` are not duplicated.
 
 ## Current objectives
 
@@ -126,3 +133,4 @@ reproduction checklist.
   known issues, and next action.
 - Keep this file concise. Detailed experiment history belongs in `runs/` and detailed progress
   belongs in `docs/roadmap.md`.
+- Update this English file and `project_memory.zh-CN.md` together.

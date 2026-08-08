@@ -1,3 +1,5 @@
+[English](README.md) | [简体中文](README.zh-CN.md)
+
 # Hand2Robot
 
 Hand2Robot is an eight-week embodied-AI engineering project that converts visual hand

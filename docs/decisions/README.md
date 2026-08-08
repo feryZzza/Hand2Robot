@@ -1,3 +1,5 @@
+[English](README.md) | [简体中文](README.zh-CN.md)
+
 # Architecture decision records
 
 ADRs preserve the reasoning behind project-wide decisions.

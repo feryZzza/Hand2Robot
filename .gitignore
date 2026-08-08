@@ -35,6 +35,7 @@ ros2_ws/log/
 # Local data and generated artifacts
 local_data/*
 !local_data/README.md
+!local_data/README.zh-CN.md
 datasets/
 artifacts/
 cache/
@@ -54,6 +55,7 @@ models/
 # Track run provenance, not heavy run outputs
 runs/*
 !runs/README.md
+!runs/README.zh-CN.md
 !runs/*/
 runs/*/*
 !runs/*/manifest.yaml

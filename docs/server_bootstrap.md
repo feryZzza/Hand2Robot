@@ -1,3 +1,5 @@
+[English](server_bootstrap.md) | [简体中文](server_bootstrap.zh-CN.md)
+
 # GPU server bootstrap boundary
 
 No server facts have been verified yet. Do not install Isaac Sim, HaMeR/MANO, datasets, or

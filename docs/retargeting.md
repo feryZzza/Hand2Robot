@@ -1,3 +1,5 @@
+[English](retargeting.md) | [简体中文](retargeting.zh-CN.md)
+
 # CPU prototype retargeting
 
 The local prototype turns a validated 21-joint `HandObservation` into a bounded

@@ -1,3 +1,5 @@
+[English](git_workflow.md) | [简体中文](git_workflow.zh-CN.md)
+
 # Git workflow
 
 ## Branches
@@ -29,6 +31,12 @@ a later commit so either side can adopt the contract independently.
 
 Each commit should represent one reviewable behavior. Generated output and unrelated formatting
 must not be mixed with functional changes.
+
+## Bilingual documentation policy
+
+Every English Markdown document outside the already-Chinese `doc/` requirements has a
+same-directory `.zh-CN.md` translation. Both files start with reciprocal language links and must
+be updated together. `test_documentation_i18n.py` enforces the pair and language-switch rules.
 
 ## Sync sequence
 

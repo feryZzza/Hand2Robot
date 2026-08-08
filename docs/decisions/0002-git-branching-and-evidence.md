@@ -1,3 +1,5 @@
+[English](0002-git-branching-and-evidence.md) | [简体中文](0002-git-branching-and-evidence.zh-CN.md)
+
 # ADR-0002: Use machine integration branches and manifest-based evidence
 
 - Status: Accepted

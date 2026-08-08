@@ -1,3 +1,5 @@
+[English](README.md) | [简体中文](README.zh-CN.md)
+
 # Machine handoff records
 
 - `local_latest.md` is maintained by local-machine work.

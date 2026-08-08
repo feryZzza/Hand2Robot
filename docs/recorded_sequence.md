@@ -1,3 +1,5 @@
+[English](recorded_sequence.md) | [简体中文](recorded_sequence.zh-CN.md)
+
 # Recorded hand-sequence format
 
 Status: format version `0.1.0`, used by the M3 CPU fixture.
