@@ -14,11 +14,11 @@ setup(
         (f"share/{package_name}/config", glob("config/*.yaml")),
         (
             f"share/{package_name}/config/calibration",
-            glob("../../../configs/calibration/*.json"),
+            glob("config/calibration/*.json"),
         ),
         (
             f"share/{package_name}/config/retargeting",
-            glob("../../../configs/retargeting/*.json"),
+            glob("config/retargeting/*.json"),
         ),
         (
             f"share/{package_name}/examples",
@@ -30,7 +30,7 @@ setup(
     zip_safe=True,
     maintainer="fery",
     maintainer_email="3319676168@qq.com",
-    description="ROS2 input, validation, and diagnostics nodes for Hand2Robot.",
+    description="ROS2 input, validation, safe targeting, and episode nodes for Hand2Robot.",
     license="TODO",
     entry_points={
         "console_scripts": [

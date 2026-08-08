@@ -84,6 +84,26 @@ class ContractDefinitionTest(unittest.TestCase):
         self.assertIn("p_A = T_A_B * p_B", text)
         self.assertIn("p_robot_base = T_robot_base_camera_optical * p_camera_optical", text)
 
+    def test_installed_runtime_configs_match_canonical_configs(self) -> None:
+        pairs = (
+            (
+                PROJECT_ROOT / "configs/calibration/synthetic_camera_to_robot_v0.1.json",
+                PROJECT_ROOT
+                / "ros2_ws/src/hand_pipeline/config/calibration/synthetic_camera_to_robot_v0.1.json",
+            ),
+            (
+                PROJECT_ROOT / "configs/retargeting/cpu_prototype_v0.1.json",
+                PROJECT_ROOT
+                / "ros2_ws/src/hand_pipeline/config/retargeting/cpu_prototype_v0.1.json",
+            ),
+        )
+        for canonical, runtime_copy in pairs:
+            self.assertEqual(
+                canonical.read_bytes(),
+                runtime_copy.read_bytes(),
+                f"runtime config drifted from {canonical}",
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

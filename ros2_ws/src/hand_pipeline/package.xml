@@ -2,7 +2,7 @@
 <package format="3">
   <name>hand_pipeline</name>
   <version>0.1.0</version>
-  <description>ROS2 input, validation, and diagnostics nodes for Hand2Robot.</description>
+  <description>ROS2 input, validation, safe targeting, and episode nodes for Hand2Robot.</description>
   <maintainer email="3319676168@qq.com">fery</maintainer>
   <license>TODO</license>
 
