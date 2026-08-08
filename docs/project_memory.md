@@ -69,9 +69,9 @@ reproduction checklist.
   with sequences 0–4, and one stale invalid target after 29 observed valid targets. The One Euro
   deterministic jitter ratio was 0.106169. Evidence is in
   `runs/20260808_local_cpu_prototype_seed0/manifest.yaml`.
-- All 22 English Markdown project documents have same-directory Simplified Chinese translations
-  with reciprocal language links. The localization test enforces this policy; the full suite now
-  contains 59 tests.
+- Documentation localization commit `2845421` gives all 22 English Markdown project documents
+  same-directory Simplified Chinese translations with reciprocal language links. The localization
+  test enforces this policy; the full suite now contains 59 tests.
 
 ## Accepted decisions
 

@@ -4,7 +4,7 @@
 
 - 更新时间：2026-08-08（Asia/Shanghai）
 - Git 提交：`8612de6`（核心）、`6c7cdbf`（ROS 闭环）、`adc89a7`（安全）、
-  `e6883b1`（构建）
+  `e6883b1`（构建）、`2845421`（双语文档）
 - 分支：`work/local`（已推送并跟踪 `origin/work/local`）
 - Schema 版本：已接受 `0.1.0`
 - 磁盘：`/` 约 4.1 GiB 可用；`/home` 约 24 GiB 可用

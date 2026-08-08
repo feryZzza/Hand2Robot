@@ -3,7 +3,8 @@
 # Local handoff
 
 - Updated: 2026-08-08 (Asia/Shanghai)
-- Git commits: `8612de6` (core), `6c7cdbf` (ROS loop), `adc89a7` (safety), `e6883b1` (build)
+- Git commits: `8612de6` (core), `6c7cdbf` (ROS loop), `adc89a7` (safety), `e6883b1` (build),
+  `2845421` (bilingual documentation)
 - Branch: `work/local` (pushed and tracking `origin/work/local`)
 - Schema version: accepted `0.1.0`
 - Disk: `/` approximately 4.1 GiB free; `/home` approximately 24 GiB free
