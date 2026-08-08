@@ -1,0 +1,27 @@
+run_id: 20260808_calibration_foundation_seed0
+git_commit: 101e1075c66139004854bcc67a0a24f54849ef60
+config: configs/calibration/synthetic_camera_to_robot_v0.1.json
+data_version: recorded_hand_static_v0.1@73dac677df09df1ab6d82b78710911025cf8b34d0c4e84bc34f42c185802c725
+hardware:
+  host_role: local_cpu
+  cpu: 13th Gen Intel Core i5-13500HX
+  ram_total_gib: 15
+command: make test-unit
+metrics:
+  total_tests_passed: 34
+  calibration_geometry_tests_passed: 11
+  transformed_wrist_camera_m: [0.0, 0.06, 0.45]
+  transformed_wrist_robot_base_m: [0.5, 0.06, 1.25]
+  detected_error_classes:
+    - non_unit_quaternion
+    - reversed_frame_direction
+    - frame_chain_mismatch
+    - millimetres_stored_as_metres
+    - degrees_stored_as_radians
+artifacts:
+  - path: configs/calibration/synthetic_camera_to_robot_v0.1.json
+    size_bytes: 380
+    sha256: cd6921c8467a4a2a1c7a3065872324ee68a1cd58d80a52d9422bd79ab406176a
+    tracked_in_git: true
+decision: keep
+reason: The dependency-free SE(3) implementation passes direction, inverse, composition, unit, and recorded-point checks.

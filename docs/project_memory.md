@@ -50,6 +50,9 @@ reproduction checklist.
 - The final M3 bag contains exactly five raw messages over 0.398 seconds. Both replays produced
   accepted sequences `[0, 1, 2, 3, 4]` from `recorded_fixture`. Evidence and bag hashes are in
   `runs/20260808_recorded_bag_replay_seed0/manifest.yaml`.
+- M4 foundation commit `101e107` adds dependency-free rigid transforms, strict calibration
+  loading, synthetic-only camera-to-robot calibration, and recorded-point transformation.
+  Thirty-four tests pass, including inverse/composition direction and unit-error detection.
 
 ## Accepted decisions
 
@@ -64,8 +67,8 @@ reproduction checklist.
 
 ## Current objectives
 
-1. Implement ROS-independent SE(3) calibration loading, transform validation, and unit tests on
-   the recorded fixture.
+1. Add palm-relative scale normalization and low-pass/One Euro filtering on deterministic
+   trajectories without publishing robot commands.
 2. Obtain `docs/handoff/server_latest.md` populated from a read-only RTX 4090 server audit.
 
 ## Pending verification
@@ -90,10 +93,9 @@ reproduction checklist.
 
 ## Next actions
 
-1. Add a versioned camera-to-robot calibration file and strict quaternion/frame validation.
-2. Test identity, inverse, composition order, and unit-error detection.
-3. Feed calibrated recorded wrist points toward the retargeting boundary without publishing a
-   robot command yet.
+1. Define palm basis and hand-scale normalization with left/right tests.
+2. Implement low-pass and One Euro filters with explicit timestamp handling.
+3. Compare raw/filtered deterministic trajectories for jitter and lag before adding IK.
 
 ## Memory update rules
 

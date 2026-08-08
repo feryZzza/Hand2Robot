@@ -10,7 +10,7 @@ acceptance evidence is committed or referenced by a checksum-bearing manifest.
 | M2 Local CPU input loop | VERIFIED | Synthetic input to diagnostics | Commit `82f9a5f`; 18 tests; normal and low-confidence smoke pass |
 | M3 Offline capture and replay | VERIFIED | Synthetic/recorded input and short rosbag | Commits `254e318`/`bbbdf27`/`8394368`; two exact replays |
 | M3b Camera and MediaPipe | TODO | Live 21-joint input | Hardware appears; space-approved dependency; same raw topic |
-| M4 Calibration and retargeting | IN PROGRESS | TF, scale, filtering, IK/safety | TF and limit tests; reachable IK target at least 95% |
+| M4 Calibration and retargeting | IN PROGRESS | TF, scale, filtering, IK/safety | SE(3) commit `101e107` verified; scale/filter/IK remain |
 | M5 Server simulation loop | TODO | Isaac Sim headless and ROS2 bridge | 1000 steps plus five-minute stable run |
 | M6 Reliability | TODO | State machine, watchdog, faults | Six fault classes; 30-minute stable run |
 | M7 Reconstruction and policy | TODO | HaMeR/MANO, LeRobot, BC/DP | Reproducible metrics and resumable experiment |
