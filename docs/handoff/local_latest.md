@@ -1,7 +1,7 @@
 # Local handoff
 
 - Updated: 2026-08-08 (Asia/Shanghai)
-- Git commit: `101e107` (`work/local`, pending push with this evidence update)
+- Git commits: `8612de6` (core), `6c7cdbf` (ROS loop), `adc89a7` (safety), `e6883b1` (build)
 - Branch: `work/local` (pushed and tracking `origin/work/local`)
 - Schema version: accepted `0.1.0`
 - Disk: `/` approximately 4.1 GiB free; `/home` approximately 24 GiB free
@@ -21,17 +21,27 @@
   launch, short rosbag capture, and independent double-replay checker.
 - Added strict SE(3), calibration loading, unit/frame validation, and synthetic-fixture point
   transformation without publishing robot commands.
+- Added palm-local scale normalization, explicit left/right mapping, low-pass and One Euro
+  filters, calibrated wrist pose, five bounded prototype finger targets, workspace/rate limits,
+  and a fail-closed stale-input watchdog.
+- Added `/robot/target`, `/episode/record`, sequence alignment, JSONL persistence, a full launch,
+  and finite synthetic, recorded, and interrupted-source acceptance scripts.
 
 ## Local verification
 
 - ROS2 Humble and colcon commands are available.
-- Thirty-four unit/contract tests pass; all three ROS2 packages build.
+- Fifty-eight unit/contract tests pass; all three ROS2 packages build.
 - Final M2 smoke: 15 valid, 0 invalid, 0 dropped, 30 Hz, last sampled latency 3.21 ms.
 - Fault smoke: 0 valid, 9 invalid, state `DEGRADED`, error `low_confidence`.
 - Recorded smoke: exactly 5 frames with sequences 0–4, 0 invalid, and 0 dropped.
 - Bag smoke: 5 raw SQLite3 messages; two fresh validators each accepted sequences 0–4 exactly.
 - Calibration: recorded wrist `[0.0, 0.06, 0.45]` maps to robot-base
   `[0.5, 0.06, 1.25]`; inverse/composition/unit-error checks pass.
+- Filter evaluation: deterministic jitter RMS falls from `0.004` m to `0.000424675` m, ratio
+  `0.106169`.
+- Prototype synthetic smoke: 20 complete, paired, valid records and a checksum-verified JSONL.
+- Prototype recorded smoke: five complete records with exact sequences 0–4.
+- Watchdog smoke: 29 observed valid targets followed by exactly one `STALE_INPUT` invalid target.
 - No model, dataset, virtual environment, or system package was installed.
 
 ## Uploaded files and checksums
@@ -49,7 +59,12 @@ simulation work.
 
 - Low root-partition headroom prohibits local dependency installation.
 - Camera availability is unresolved but does not block synthetic input.
+- The sandbox blocks UDP interface enumeration and emits Fast DDS warnings; local ROS transport
+  still passed. Recheck normal DDS networking outside the sandbox.
+- The five `prototype_*_flexion` targets are CPU test-sink values, not real robot or simulator
+  commands. Asset-specific IK and collision safety remain server work.
 
 ## Next step
 
-Implement palm-relative scale normalization and deterministic filter comparisons before IK.
+Run the server read-only audit, freeze one robot/hand asset manifest, then implement server IK
+and Isaac Sim execution against the unchanged shared contracts.

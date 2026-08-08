@@ -1,0 +1,63 @@
+run_id: 20260808_local_cpu_prototype_seed0
+git_commits:
+  retargeting_core: 8612de62dbb57e5ebc4a1e8d94246bd208a87d67
+  ros_episode_loop: 6c7cdbf9c4b54cd509999aac04882015959a4928
+  fail_closed_state_fix: adc89a7f51bda5050f5cf80d6a68d55f07c32244
+  runtime_config_build_fix: e6883b15dbc5787568ccd1118be5e07331a66bc1
+config: configs/retargeting/cpu_prototype_v0.1.json
+data_versions:
+  synthetic: deterministic_publisher@schema-0.1.0
+  recorded: recorded_hand_static_v0.1@73dac677df09df1ab6d82b78710911025cf8b34d0c4e84bc34f42c185802c725
+hardware:
+  host_role: local_cpu
+  cpu: 13th Gen Intel Core i5-13500HX
+  ram_total_gib: 15
+  ros_distribution: humble
+commands:
+  - make test-unit
+  - make build-ros
+  - make smoke-prototype
+  - make smoke-prototype-recorded
+  - make smoke-prototype-watchdog
+metrics:
+  total_tests_passed: 58
+  ros_packages_built: 3
+  source_palm_width_m: 0.072691127
+  target_palm_width_m: 0.085
+  raw_jitter_rms_m: 0.004
+  filtered_jitter_rms_m: 0.000424675
+  jitter_reduction_ratio: 0.106169
+  synthetic_episode_records: 20
+  synthetic_sequence_range: [1, 20]
+  synthetic_missing_records: 0
+  recorded_episode_records: 5
+  recorded_sequences: [0, 1, 2, 3, 4]
+  recorded_missing_records: 0
+  watchdog_valid_targets_observed: 29
+  watchdog_stale_invalid_targets: 1
+  target_wrist_robot_base_m: [0.5, 0.06, 1.25]
+  fault_classes_covered:
+    - low_confidence
+    - non_monotonic_timestamp
+    - degenerate_palm
+    - calibration_frame_or_unit_error
+    - out_of_workspace
+    - stale_input
+artifacts:
+  - path: configs/retargeting/cpu_prototype_v0.1.json
+    size_bytes: 813
+    sha256: 530bdf1aa126941d92808f7b65aedf85e262fe3da1582ecb65f1feaedb2df41a
+    tracked_in_git: true
+  - path: local_data/artifacts/episodes/prototype_smoke.t8Ovbl/episode.jsonl
+    size_bytes: 72139
+    sha256: b5cb2b4d8648117678b2d9ccbd984f7e14d8109940407fd31dfcc18c6a466cc7
+    tracked_in_git: false
+  - path: local_data/artifacts/episodes/prototype_recorded.r1zJ8r/episode.jsonl
+    size_bytes: 13933
+    sha256: 48711db5032c8710a5c772c07f48485d822d91ae037f6e0217c156aff06de855
+    tracked_in_git: false
+environment_notes:
+  - Network-isolated sandbox denied UDP interface enumeration; localhost ROS communication still passed.
+  - No camera, GPU dependency, model, dataset, virtual environment, or system package was used.
+decision: keep
+reason: The local CPU path now produces bounded safe targets, fails closed on source loss, and persists deterministic complete episodes from both supported offline adapters.

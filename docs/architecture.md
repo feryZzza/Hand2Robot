@@ -1,33 +1,38 @@
 # Architecture
 
-Status: M2 local CPU baseline.
+Status: verified local CPU prototype; server execution boundary pending.
 
 ## Current data path
 
 ```text
-synthetic_hand_publisher
-    /hand/observation/raw  [HandObservation, SensorDataQoS]
+synthetic_hand_publisher OR recorded_sequence_player
+    /hand/observation/raw  [HandObservation, best effort]
                     |
                     v
-hand_observation_validator
-    |-- /hand/observation [accepted observations, SensorDataQoS]
-    `-- /system/status    [counters/diagnostics, reliable >= 1 Hz]
-                    |
-                    v
-hand_smoke_check / low_confidence_probe
+hand_observation_validator ----------------> /system/status
+    /hand/observation     [accepted only]          |
+                    |                              |
+                    v                              |
+safe_retargeter                                    |
+  calibration -> palm/scale -> One Euro -> safety |
+    /robot/target [reliable, keep last 1]          |
+                    |                              |
+                    +---------------+--------------+
+                                    v
+                            episode_recorder
+                 /episode/record + ignored JSONL artifact
 ```
 
-`recorded_sequence_player` is an alternate publisher for `/hand/observation/raw`. It loads and
-fully validates a versioned JSON sequence before advertising data, waits for subscriber
-discovery, retains capture timestamps, and publishes each frame once. Downstream topics and the
-validator are unchanged.
+`input_pipeline.launch.py` runs only an adapter and the validator. It selects `synthetic` or
+`recorded` through `input_mode`; exactly one adapter runs and downstream topics do not change.
 
-`input_pipeline.launch.py` selects `synthetic` or `recorded` through the `input_mode` launch
-argument. Exactly one adapter runs, while validator node, raw/accepted/status topics, message
-types, and QoS remain identical.
+`prototype_pipeline.launch.py` preserves that adapter boundary and adds the safe retargeter and
+optional episode recorder. Live mode enforces event age against the ROS clock. Recorded mode
+must explicitly set `enforce_capture_age:=false` because it preserves historical event times;
+ordering, source-time rate limits, and the monotonic arrival watchdog stay enabled.
 
 The validator republishes only accepted messages. Low confidence, unsupported schema, empty
-frames/sources, non-finite values, invalid pixel `z`, non-monotonic time/sequence, invalid source
+frames/sources, non-finite values, invalid pixel z, non-monotonic time/sequence, invalid source
 flags, and malformed arrays never reach `/hand/observation`.
 
 ## Package responsibilities
@@ -35,37 +40,44 @@ flags, and malformed arrays never reach `/hand/observation`.
 | Package | Responsibility | Runtime dependency on ROS2 |
 |---|---|---|
 | `hand_msgs` | Four versioned wire contracts | yes, interface generation only |
-| `hand2robot_core` | Deterministic validation, counters, and source ordering | no |
-| `hand_pipeline` | ROS conversion, publishers, validator node, status, smoke probes | yes |
+| `hand2robot_core` | Validation, SE(3), palm scale, filters, retargeting safety, episode alignment | no |
+| `hand_pipeline` | ROS conversion, adapters, validator, retargeter, recorder, probes | yes |
 
-`hand2robot_core` deliberately accepts plain immutable data. This keeps safety rules testable on
-CPU without DDS, ROS graph startup, a camera, or a GPU.
+`hand2robot_core` accepts plain immutable data. Safety and alignment therefore remain testable
+without DDS, ROS graph startup, a camera, NumPy, or a GPU.
 
-## Current state behavior
+## State and safety behavior
 
 - Before any input, the validator publishes `INIT`.
 - A recent accepted observation produces `RUNNING` and is forwarded.
 - A rejected or stale observation produces `DEGRADED` and is not forwarded.
-- An unsupported schema produces `ERROR` until the validator process is restarted or a future
-  explicit recovery transition is implemented.
+- An unsupported schema produces `ERROR` for that validator process.
 - Counters remain monotonic for the lifetime of the validator node.
+- The retargeter publishes only bounded targets as valid.
+- After input stops, its watchdog publishes one invalid `STALE_INPUT` target and does not
+  indefinitely repeat the last command.
 
-This is an input-boundary state subset, not the final system state machine. Calibration,
-retargeting, IK, bridge, and execution states will extend it without weakening the current
-validation boundary.
+This is a local state subset. Server-side IK, collision state, ROS2 Bridge health, and simulator
+recovery must extend it without weakening the validation or stale-command boundaries.
 
-## Local smoke
+## Input and evidence paths
 
-`scripts/run_local_smoke.sh` keeps ROS logs under `local_data/tmp/smoke`, restricts discovery to
-localhost, and uses a dedicated ROS domain. Its two checks are:
+The recorded adapter loads and fully validates a versioned JSON sequence before publishing,
+waits for discovery, retains capture timestamps, and publishes each frame once. The M3 bag check
+records `/hand/observation/raw` and crosses a fresh validator on each replay, testing
+serialization plus deterministic validation rather than merely counting stored output.
 
-1. deterministic 30 Hz synthetic input reaches the accepted topic with valid latency and zero
-   invalid samples;
-2. low-confidence input is rejected, no valid sample is emitted, state becomes `DEGRADED`, and
-   the stable error code is `low_confidence`.
+The local prototype smokes cover continuous synthetic input, exact five-frame recorded input,
+complete episode persistence, and source interruption. ROS build products, JSONL episodes, bags,
+and logs remain below ignored local storage; tracked run manifests contain hashes and summaries.
 
-ROS build/install/log output and smoke logs are local generated state and are excluded from Git.
+## Safety boundary and current non-goals
 
-The M3 bag check records `/hand/observation/raw`, not the already validated topic. Each replay
-therefore crosses a new validator instance before its accepted sequences are counted. This tests
-both serialization and deterministic validation rather than merely counting stored output.
+The selected local actuator manifest contains one bounded curl proxy for each finger and a
+calibrated wrist pose. Workspace and rate limits are enforced before `valid=true`. It exists to
+exercise contracts, transport, degradation, and recording on CPU. It is not compatible with a
+physical robot or simulator asset by name.
+
+The next execution layer must load a checked robot manifest, solve IK, enforce actual joint and
+collision limits, reject stale or unknown targets, and report its state. Isaac Sim,
+Panda/Allegro, HaMeR/MANO, and policy training are not silently emulated by this local prototype.

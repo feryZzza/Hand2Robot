@@ -1,7 +1,7 @@
 # Hand2Robot project memory
 
 Last verified: 2026-08-08 (Asia/Shanghai)  
-Current milestone: M4 — calibration and retargeting foundation  
+Current milestone: local CPU prototype verified; M5 server IK/simulation pending  
 Canonical remote: `https://github.com/feryZzza/Hand2Robot.git`
 
 This document is the concise, version-controlled memory for future work. It records verified
@@ -53,6 +53,20 @@ reproduction checklist.
 - M4 foundation commit `101e107` adds dependency-free rigid transforms, strict calibration
   loading, synthetic-only camera-to-robot calibration, and recorded-point transformation.
   Thirty-four tests pass, including inverse/composition direction and unit-error detection.
+- Commit `8612de6` adds palm-local coordinates, explicit left/right anatomical mapping, palm-width
+  scale normalization, low-pass and One Euro filters, bounded five-finger curl targets, workspace
+  rejection, source-time rate limiting, and a monotonic stale-input watchdog.
+- Commit `6c7cdbf` closes the ROS2 path through `/robot/target` and `/episode/record`, persists
+  non-overwriting JSONL episodes, and adds synthetic, recorded, and interrupted-source smokes.
+  Fifty-eight unit/contract tests and all three ROS2 packages pass.
+- Safety fix `adc89a7` ensures any invalid result supersedes retained valid target state, so a
+  later watchdog cannot revive or continue reasoning from a pre-fault command.
+- Build fix `e6883b1` installs package-local checked copies of canonical runtime configuration;
+  their byte equality is tested and the `hand_pipeline` colcon job exits successfully.
+- The accepted prototype run produced 20 complete synthetic records, five exact recorded records
+  with sequences 0–4, and one stale invalid target after 29 observed valid targets. The One Euro
+  deterministic jitter ratio was 0.106169. Evidence is in
+  `runs/20260808_local_cpu_prototype_seed0/manifest.yaml`.
 
 ## Accepted decisions
 
@@ -64,12 +78,16 @@ reproduction checklist.
   testable without ROS2. ROS2 packages wrap the core logic for transport and orchestration.
 - Heavy artifacts never enter ordinary Git history. Git stores code, configuration, manifests,
   hashes, metrics summaries, and documentation.
+- ADR-0003 limits the generic five-flexion target to a CPU test sink. It is not a physical or
+  Isaac Sim command contract; asset-specific names, IK, joint limits, and collisions are a
+  server-side acceptance gate.
 
 ## Current objectives
 
-1. Add palm-relative scale normalization and low-pass/One Euro filtering on deterministic
-   trajectories without publishing robot commands.
-2. Obtain `docs/handoff/server_latest.md` populated from a read-only RTX 4090 server audit.
+1. Obtain `docs/handoff/server_latest.md` populated from a read-only RTX 4090 server audit.
+2. Freeze one licensed robot/hand asset and implement its IK/collision execution adapter on the
+   server without changing schema `0.1.0`.
+3. Add the live camera/MediaPipe adapter when hardware and local dependency capacity are present.
 
 ## Pending verification
 
@@ -93,9 +111,11 @@ reproduction checklist.
 
 ## Next actions
 
-1. Define palm basis and hand-scale normalization with left/right tests.
-2. Implement low-pass and One Euro filters with explicit timestamp handling.
-3. Compare raw/filtered deterministic trajectories for jitter and lag before adding IK.
+1. Run `scripts/server_audit_readonly.sh` on the RTX 4090 host and update the server handoff.
+2. Verify persistent disk, container GPU, Isaac Sim version, asset licenses, and recovery before
+   installing or downloading anything large.
+3. Replace the CPU test manifest with one checked server asset manifest, then implement actual IK,
+   collision limits, execution feedback, and the 1000-step headless gate.
 
 ## Memory update rules
 

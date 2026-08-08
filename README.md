@@ -15,9 +15,11 @@ camera / recording / synthetic input
 
 ## Current status
 
-The repository is in milestone M0: project bootstrap and contract definition. The local
-machine intentionally contains no Isaac Sim installation, large model, dataset, or training
-environment.
+The repository now contains a verified **local CPU prototype**. Synthetic or recorded
+21-joint input crosses validation, calibration, palm/scale normalization, One Euro filtering,
+workspace and velocity safety checks, `RobotTarget` publication, watchdog degradation, and
+versioned `EpisodeRecord` persistence. The local machine intentionally contains no Isaac Sim,
+large model, dataset, or training environment.
 
 Start with:
 
@@ -38,6 +40,9 @@ make build-ros
 make smoke-local
 make smoke-recorded
 make smoke-bag
+make smoke-prototype
+make smoke-prototype-recorded
+make smoke-prototype-watchdog
 ```
 
 The smoke target launches a deterministic 21-joint source and validator, verifies accepted
@@ -59,6 +64,23 @@ ros2 launch hand_pipeline input_pipeline.launch.py input_mode:=recorded
 exactly five messages, and replays it twice through fresh validator instances. Bags and logs stay
 under ignored `local_data/tmp/` storage.
 
+The three prototype targets verify the complete CPU path. The normal synthetic check writes and
+validates a 20-step JSONL episode, recorded mode produces exactly sequences 0–4 through the same
+downstream nodes, and the watchdog check stops its source and requires exactly one invalid
+`STALE_INPUT` target. See [local reproduction](docs/reproduction.md) for expected output.
+
+The runtime entry point for the initial prototype is:
+
+```bash
+source /opt/ros/humble/setup.bash
+source ros2_ws/install/setup.bash
+ros2 launch hand_pipeline prototype_pipeline.launch.py input_mode:=synthetic
+```
+
+`/robot/target` currently uses a five-flexion CPU test manifest. It is deliberately not a real
+Panda/Allegro command interface; server-side asset selection, IK, collisions, and Isaac Sim
+execution remain gated by the server audit.
+
 ## Project records
 
 - [Current project memory](docs/project_memory.md)
@@ -69,6 +91,9 @@ under ignored `local_data/tmp/` storage.
 - [Current architecture](docs/architecture.md)
 - [Recorded-sequence format](docs/recorded_sequence.md)
 - [Calibration foundation](docs/calibration.md)
+- [CPU retargeting and safety](docs/retargeting.md)
+- [Local reproduction](docs/reproduction.md)
+- [Server bootstrap boundary](docs/server_bootstrap.md)
 - [Architecture decisions](docs/decisions/README.md)
 - [Local/server handoff](docs/handoff/README.md)
 
