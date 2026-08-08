@@ -31,6 +31,8 @@ reproduction checklist.
 - No GPU-server handoff or verified server environment report is present yet.
 - The GitHub remote was empty when repository initialization began. Baseline commit `2e3ccca`
   initialized and was pushed to `main` on 2026-08-08.
+- Stable branch `main` and local integration branch `work/local` both exist on `origin`.
+  `work/local` was created from verified M0 memory commit `d78e063`.
 
 ## Accepted decisions
 
@@ -70,10 +72,9 @@ reproduction checklist.
 
 ## Next actions
 
-1. Create and push `work/local` from the verified M0 baseline.
-2. Draft and review interface and frame contracts as a separate `contract:` commit.
-3. Create ROS2 `hand_msgs` plus synthetic publisher and validator packages.
-4. Add deterministic CPU tests for valid and malformed observations.
+1. Draft and review interface and frame contracts as a separate `contract:` commit.
+2. Create ROS2 `hand_msgs` plus synthetic publisher and validator packages.
+3. Add deterministic CPU tests for valid and malformed observations.
 
 ## Memory update rules
 

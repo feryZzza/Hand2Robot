@@ -5,7 +5,7 @@ acceptance evidence is committed or referenced by a checksum-bearing manifest.
 
 | Milestone | Status | Outcome | Acceptance gate |
 |---|---|---|---|
-| M0 Repository foundation | VERIFIED | Git, memory, workflow, skeleton | `make doctor`; baseline commit `2e3ccca` pushed to `main` |
+| M0 Repository foundation | VERIFIED | Git, memory, workflow, skeleton | `make doctor`; baseline on `main`; `work/local` pushed from `d78e063` |
 | M1 Shared contracts | TODO | Messages, schemas, frames, units | Contract docs, samples, and validation tests agree |
 | M2 Local CPU input loop | TODO | Synthetic/recorded input to diagnostics | Deterministic smoke test; malformed inputs diagnosed |
 | M3 Capture and replay | TODO | Camera/MediaPipe/short rosbag | Input changes by config; two replays agree |
@@ -17,7 +17,6 @@ acceptance evidence is committed or referenced by a checksum-bearing manifest.
 
 ## Immediate build queue
 
-1. Establish the `work/local` branch from the M0 baseline.
-2. Define M1 as a dedicated `contract:` change.
-3. Build the smallest M2 path: synthetic publisher → validator → system diagnostics.
-4. Request and review the independent GPU-server audit before starting M5.
+1. Define M1 as a dedicated `contract:` change.
+2. Build the smallest M2 path: synthetic publisher → validator → system diagnostics.
+3. Request and review the independent GPU-server audit before starting M5.

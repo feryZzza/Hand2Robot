@@ -1,8 +1,8 @@
 # Local handoff
 
 - Updated: 2026-08-08 (Asia/Shanghai)
-- Git commit: `2e3ccca` (`main`, pushed to `origin/main`)
-- Branch: `main` during bootstrap; local work continues on `work/local`
+- Git base: `d78e063` (`main`, pushed to `origin/main`)
+- Branch: `work/local` (pushed and tracking `origin/work/local`)
 - Schema version: draft `0.1.0`
 - Disk: `/` approximately 4.1 GiB free; `/home` approximately 24 GiB free
 - Input: no camera detected; synthetic input is the planned baseline
@@ -13,6 +13,7 @@
 - Audited the initial workspace and core local commands.
 - Established repository memory, ADR, handoff, Git workflow, and safety rules.
 - Ran the read-only local doctor and pushed the verified M0 baseline to GitHub.
+- Created the protected local integration path through `work/local`.
 
 ## Local verification
 
