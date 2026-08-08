@@ -1,0 +1,31 @@
+run_id: 20260808_local_synthetic_smoke_seed0
+git_commit: 82f9a5f6de6466eaf50c48ae24388784b853c358
+config: ros2_ws/src/hand_pipeline/config/synthetic_smoke.yaml
+data_version: synthetic_hand_v0.1.0@82f9a5f6de6466eaf50c48ae24388784b853c358
+hardware:
+  host_role: local_cpu
+  cpu: 13th Gen Intel Core i5-13500HX
+  ram_total_gib: 15
+  ros_distro: humble
+  ros_domain_id: 72
+command: ./scripts/run_local_smoke.sh
+metrics:
+  normal_path:
+    observations_seen_by_probe: 16
+    validator_valid_count_at_status: 15
+    validator_invalid_count: 0
+    dropped_count: 0
+    input_rate_hz: 30.0
+    last_end_to_end_latency_ms: 3.21
+  low_confidence_fault:
+    validator_valid_count: 0
+    validator_invalid_count_at_status: 9
+    expected_state: DEGRADED
+    last_error_code: low_confidence
+artifacts:
+  - path: local_data/tmp/smoke/launch.log
+    size_bytes: 4674
+    sha256: a7477f6cb8ab8987f6f1039fa57998ca3adba28a6bfe1c401002f5928e66e1df
+    tracked_in_git: false
+decision: keep
+reason: Normal data was accepted without drops and low-confidence data was rejected with the expected diagnostic.

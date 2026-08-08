@@ -1,7 +1,7 @@
 # Hand2Robot project memory
 
 Last verified: 2026-08-08 (Asia/Shanghai)  
-Current milestone: M2 — local CPU input loop  
+Current milestone: M3 — capture and replay  
 Canonical remote: `https://github.com/feryZzza/Hand2Robot.git`
 
 This document is the concise, version-controlled memory for future work. It records verified
@@ -36,6 +36,13 @@ reproduction checklist.
 - Contract commit `3fb0f80` defines schema `0.1.0`, four ROS2 messages, the 21-joint order,
   timestamp/validity/QoS rules, and frame transform direction. Five contract tests and the
   ROS2 `hand_msgs` build passed locally.
+- Supplemental contract commit `cffc637` explicitly marks whether end-to-end latency is valid.
+- M2 implementation commit `82f9a5f` adds the ROS-independent validator, synthetic ROS2 input,
+  accepted-observation topic, system status, low-confidence fault probe, and finite smoke script.
+  All 18 unit tests and all three ROS2 package builds pass.
+- The committed-code M2 smoke recorded 15 valid/0 invalid/0 dropped at 30 Hz with a last sampled
+  latency of 3.21 ms. Its fault phase rejected 9/9 low-confidence samples with `DEGRADED` and
+  `low_confidence`. Evidence is in `runs/20260808_local_synthetic_smoke_seed0/manifest.yaml`.
 
 ## Accepted decisions
 
@@ -50,7 +57,8 @@ reproduction checklist.
 
 ## Current objectives
 
-1. Implement a CPU-only ROS2 synthetic-input-to-diagnostics smoke path.
+1. Add deterministic recorded-sequence input and short rosbag capture/replay without requiring a
+   camera.
 2. Obtain `docs/handoff/server_latest.md` populated from a read-only RTX 4090 server audit.
 
 ## Pending verification
@@ -75,9 +83,9 @@ reproduction checklist.
 
 ## Next actions
 
-1. Create the ROS-agnostic validation core and ROS2 synthetic publisher/validator packages.
-2. Add deterministic CPU tests for valid and malformed observations.
-3. Run a local ROS2 smoke check and record message counts and diagnostics.
+1. Define a small recorded-sequence fixture/manifest and adapter using the same raw topic.
+2. Record and replay a short synthetic rosbag twice, comparing counts and diagnostics.
+3. Keep camera/MediaPipe optional until a camera appears and local package space is approved.
 
 ## Memory update rules
 
