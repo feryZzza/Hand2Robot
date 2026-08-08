@@ -43,6 +43,24 @@ All 21-element hand arrays use this fixed anatomical order:
 
 Backends must convert their native order to this order at their boundary.
 
+## Raw visual-frame boundary
+
+Camera and video-file input share `/visual/input/image_raw` with ROS type
+`sensor_msgs/msg/Image`, sensor-data QoS, `bgr8` encoding, and a non-empty optical
+`header.frame_id`. The switch is a launch-time source choice; reconstruction code must not use a
+different image topic or encoding for each source.
+
+The adapter stamps each image with the active ROS clock immediately after a successful camera
+acquisition or video decode. Stamps must increase strictly within a process, including across a
+looped video. A reconstruction backend preserves that stamp in the resulting `HandObservation`
+and uses a source identifier that distinguishes camera from video, such as `camera_mediapipe` or
+`video_hamer`.
+
+A video file must use calibration for the camera that recorded it. The synthetic calibration
+fixture is not valid for arbitrary video. Raw video mode is also distinct from `recorded` mode:
+video supplies RGB frames before reconstruction, while `recorded` supplies already reconstructed
+and versioned 21-joint observations.
+
 ## `HandObservation`
 
 ROS type: `hand_msgs/msg/HandObservation`.
@@ -105,6 +123,7 @@ same episode.
 
 | Topic | Type | QoS | Purpose |
 |---|---|---|---|
+| `/visual/input/image_raw` | `sensor_msgs.Image` | sensor data, best effort, depth 5 | Shared camera/video frame input before reconstruction |
 | `/hand/observation/raw` | `HandObservation` | sensor data, best effort, depth 5 | Adapter output before validation |
 | `/hand/observation` | `HandObservation` | sensor data, best effort, depth 5 | Accepted observation |
 | `/robot/target` | `RobotTarget` | reliable, volatile, keep last 1 | Latest safe target |

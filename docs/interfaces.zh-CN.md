@@ -41,6 +41,22 @@
 
 各后端必须在自身边界把原生顺序转换成该顺序。
 
+## 原始视觉帧边界
+
+摄像头和视频文件输入统一使用 `/visual/input/image_raw`，ROS 类型为
+`sensor_msgs/msg/Image`，采用 sensor-data QoS、`bgr8` 编码和非空的光学
+`header.frame_id`。切换只发生在启动时的数据源选择；重建代码不得为两种来源使用不同
+的图像 topic 或编码。
+
+适配器会在摄像头成功采集或视频成功解码后，立即使用当前 ROS 时钟为图像打时间戳。
+同一进程内时间戳必须严格递增，视频循环后也不例外。重建后端应把该时间戳保留到
+生成的 `HandObservation` 中，并使用能够区分摄像头和视频的来源标识，例如
+`camera_mediapipe` 或 `video_hamer`。
+
+视频文件必须使用录制该视频的摄像头标定；合成标定固定样例不能用于任意视频。原始
+视频模式也不同于 `recorded` 模式：视频提供重建前的 RGB 帧，而 `recorded` 提供已经
+重建并版本化的 21 关节观测。
+
 ## `HandObservation`
 
 ROS 类型：`hand_msgs/msg/HandObservation`。
@@ -100,6 +116,7 @@ ROS 类型：`hand_msgs/msg/EpisodeRecord`。每条记录保存原始观测和�
 
 | Topic | 类型 | QoS | 用途 |
 |---|---|---|---|
+| `/visual/input/image_raw` | `sensor_msgs.Image` | sensor data、best effort、depth 5 | 重建前统一的摄像头/视频帧输入 |
 | `/hand/observation/raw` | `HandObservation` | sensor data、best effort、depth 5 | 校验前适配器输出 |
 | `/hand/observation` | `HandObservation` | sensor data、best effort、depth 5 | 已接受观测 |
 | `/robot/target` | `RobotTarget` | reliable、volatile、keep last 1 | 最新安全目标 |

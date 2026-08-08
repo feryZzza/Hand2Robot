@@ -84,6 +84,13 @@ class ContractDefinitionTest(unittest.TestCase):
         self.assertIn("p_A = T_A_B * p_B", text)
         self.assertIn("p_robot_base = T_robot_base_camera_optical * p_camera_optical", text)
 
+    def test_camera_and_video_share_raw_visual_contract(self) -> None:
+        text = (PROJECT_ROOT / "docs" / "interfaces.md").read_text(encoding="utf-8")
+        self.assertIn("`/visual/input/image_raw`", text)
+        self.assertIn("`sensor_msgs/msg/Image`", text)
+        self.assertIn("`bgr8`", text)
+        self.assertIn("video supplies RGB frames before reconstruction", text)
+
     def test_installed_runtime_configs_match_canonical_configs(self) -> None:
         pairs = (
             (
