@@ -123,7 +123,7 @@ same episode.
 
 | Topic | Type | QoS | Purpose |
 |---|---|---|---|
-| `/visual/input/image_raw` | `sensor_msgs.Image` | sensor data, best effort, depth 5 | Shared camera/video frame input before reconstruction |
+| `/visual/input/image_raw` | `sensor_msgs/msg/Image` | sensor data, best effort, depth 5 | Shared camera/video frame input before reconstruction |
 | `/hand/observation/raw` | `HandObservation` | sensor data, best effort, depth 5 | Adapter output before validation |
 | `/hand/observation` | `HandObservation` | sensor data, best effort, depth 5 | Accepted observation |
 | `/robot/target` | `RobotTarget` | reliable, volatile, keep last 1 | Latest safe target |

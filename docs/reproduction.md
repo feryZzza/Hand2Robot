@@ -21,6 +21,7 @@ make test-unit
 make build-ros
 make smoke-local
 make smoke-recorded
+make smoke-video-input
 make smoke-bag
 make smoke-prototype
 make smoke-prototype-recorded
@@ -29,8 +30,9 @@ make smoke-prototype-watchdog
 
 Expected prototype evidence:
 
-- 59 dependency-free unit/contract/documentation tests pass;
+- 66 dependency-free unit/contract/documentation tests pass;
 - all three ROS2 packages build;
+- video mode publishes at least five valid `160x120` `bgr8` images with strict timestamps;
 - synthetic mode produces 20 complete paired records with valid bounded targets;
 - recorded mode produces exactly sequences 0–4 as five complete paired records;
 - source interruption produces exactly one `STALE_INPUT`, `valid=false` target;
@@ -54,6 +56,9 @@ ros2 launch hand_pipeline prototype_pipeline.launch.py \
 The recorder opens output with exclusive creation and refuses to overwrite an existing episode.
 Choose a new path for every run. For historical replay use `input_mode:=recorded` together with
 `enforce_capture_age:=false`.
+
+To verify server-style video input without a camera, run `make smoke-video-input`. It generates a
+small temporary MP4 below ignored `local_data/tmp/`; it does not download or commit media.
 
 ## Sandbox transport warning
 

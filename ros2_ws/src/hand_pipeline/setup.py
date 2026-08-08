@@ -45,6 +45,8 @@ setup(
             "episode_recorder = hand_pipeline.episode_recorder:main",
             "prototype_smoke_check = hand_pipeline.prototype_smoke_check:main",
             "prototype_watchdog_check = hand_pipeline.prototype_watchdog_check:main",
+            "visual_input_publisher = hand_pipeline.visual_input_publisher:main",
+            "visual_input_smoke_check = hand_pipeline.visual_input_smoke_check:main",
         ],
     },
 )

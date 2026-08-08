@@ -37,6 +37,24 @@ watchdog 仍然启用。
 非有限值、无效像素 z、非单调时间/序列、无效源标志和畸形数组都不能进入
 `/hand/observation`。
 
+## 已准备的服务器视觉链路
+
+```text
+摄像头设备 或 视频文件
+    visual_input_publisher -> /visual/input/image_raw [sensor_msgs/Image, bgr8]
+                                      |
+                                      v
+                    MediaPipe 或 HaMeR 重建 [待完成]
+                                      |
+                                      v
+                         /hand/observation/raw
+```
+
+`visual_input.launch.py` 通过 `visual_input_mode` 选择 `camera` 或 `video`；两者发布相同
+图像契约，因此服务器重建适配器无需按传输来源分支。视频模式会在打开前校验文件，
+按照检测到的 FPS 和 `playback_rate` 播放，可选循环，并在解码前等待订阅者。这个已
+准备的边界不表示 MediaPipe 或 HaMeR 重建已经实现。
+
 ## 包职责
 
 | 包 | 职责 | 运行时依赖 ROS2 |
@@ -63,7 +81,8 @@ GPU 也能测试安全和对齐逻辑。
 
 ## 输入与证据路径
 
-录制适配器在发布前完整加载并验证版本化 JSON 序列，等待发现，保留采集时间戳，且
+视觉适配器为实时摄像头和服务器上的视频文件提供稳定的原始 RGB 边界。录制适配器在
+发布前完整加载并验证版本化 JSON 序列，等待发现，保留采集时间戳，且
 每帧只发布一次。M3 bag 检查记录 `/hand/observation/raw`，每次回放都经过新的校验器，
 从而同时测试序列化和确定性校验，而不只是统计已存储输出。
 

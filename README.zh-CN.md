@@ -39,6 +39,7 @@ make test-unit
 make build-ros
 make smoke-local
 make smoke-recorded
+make smoke-video-input
 make smoke-bag
 make smoke-prototype
 make smoke-prototype-recorded
@@ -58,6 +59,18 @@ make smoke-prototype-watchdog
 ros2 launch hand_pipeline input_pipeline.launch.py input_mode:=synthetic
 ros2 launch hand_pipeline input_pipeline.launch.py input_mode:=recorded
 ```
+
+服务器视觉帧入口可以独立地在摄像头和视频文件之间切换，同时为 MediaPipe 或 HaMeR
+保持 `/visual/input/image_raw` 不变：
+
+```bash
+ros2 launch hand_pipeline visual_input.launch.py visual_input_mode:=camera camera_device:=0
+ros2 launch hand_pipeline visual_input.launch.py visual_input_mode:=video \
+  video_path:=/persistent/data/hand_input.mp4
+```
+
+重建适配器仍待完成；该节点负责提供并验证其共享 RGB 输入边界。时间戳、标定、循环
+播放和服务器存储规则见[可切换视觉输入](docs/visual_input.zh-CN.md)。
 
 `make smoke-bag` 会把原始固定样例录制成临时 SQLite3 rosbag，确认 bag 中恰好有五条
 消息，再通过两个全新的校验器实例各回放一次。bag 和日志保存在被忽略的
@@ -90,6 +103,7 @@ Panda/Allegro 命令接口；服务器资产选择、IK、碰撞检查和 Isaac 
 - [录制序列格式](docs/recorded_sequence.zh-CN.md)
 - [标定基础](docs/calibration.zh-CN.md)
 - [CPU 重定向与安全](docs/retargeting.zh-CN.md)
+- [可切换的摄像头/视频输入](docs/visual_input.zh-CN.md)
 - [本地复现](docs/reproduction.zh-CN.md)
 - [服务器启动边界](docs/server_bootstrap.zh-CN.md)
 - [架构决策](docs/decisions/README.zh-CN.md)

@@ -1,0 +1,13 @@
+visual_input_publisher:
+  ros__parameters:
+    input_mode: camera
+    camera_device: 0
+    video_path: ""
+    loop_video: false
+    playback_rate: 1.0
+    fallback_frequency_hz: 30.0
+    startup_delay_s: 0.5
+    discovery_timeout_s: 5.0
+    minimum_subscription_count: 1
+    frame_id: camera_optical_frame
+    output_topic: /visual/input/image_raw

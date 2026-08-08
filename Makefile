@@ -1,4 +1,4 @@
-.PHONY: build-ros doctor git-status smoke-bag smoke-local smoke-prototype smoke-prototype-recorded smoke-prototype-watchdog smoke-recorded test-contract test-unit
+.PHONY: build-ros doctor git-status smoke-bag smoke-local smoke-prototype smoke-prototype-recorded smoke-prototype-watchdog smoke-recorded smoke-video-input test-contract test-unit
 
 ROS_SETUP ?= /opt/ros/humble/setup.bash
 
@@ -16,6 +16,9 @@ smoke-local: build-ros
 
 smoke-recorded: build-ros
 	@./scripts/run_recorded_smoke.sh
+
+smoke-video-input: build-ros
+	@./scripts/run_video_input_smoke.sh
 
 smoke-bag: build-ros
 	@./scripts/run_bag_replay_check.sh

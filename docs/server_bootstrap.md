@@ -22,6 +22,28 @@ large install, freeze:
 4. ROS2/bridge compatibility with schema `0.1.0`;
 5. snapshot, shutdown persistence, remote access, and artifact transfer behavior.
 
+## Camera/video input switch
+
+The server no longer requires a physically attached camera to begin reconstruction integration.
+Both visual sources publish the same raw image topic:
+
+```bash
+# Attached camera
+ros2 launch hand_pipeline visual_input.launch.py \
+  visual_input_mode:=camera camera_device:=0
+
+# Server-resident test video
+ros2 launch hand_pipeline visual_input.launch.py \
+  visual_input_mode:=video \
+  video_path:=/persistent/data/hand_input.mp4 \
+  loop_video:=true
+```
+
+Run `make smoke-video-input` before connecting MediaPipe or HaMeR. Then make the reconstruction
+adapter subscribe to `/visual/input/image_raw` and publish `/hand/observation/raw` for both modes.
+Keep videos on the persistent data disk and record their SHA256 in run manifests; never add them
+to Git. The video's source camera and matching calibration must be recorded together.
+
 The first server acceptance target is not training. It is a headless scene that consumes the
 committed recorded sequences, replaces the CPU prototype actuator manifest with checked robot
 joint names and IK, runs 1000 bounded steps, records state, and survives a five-minute smoke.

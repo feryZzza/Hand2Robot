@@ -41,6 +41,7 @@ make test-unit
 make build-ros
 make smoke-local
 make smoke-recorded
+make smoke-video-input
 make smoke-bag
 make smoke-prototype
 make smoke-prototype-recorded
@@ -61,6 +62,19 @@ The normal runtime entry point switches adapters without changing downstream nod
 ros2 launch hand_pipeline input_pipeline.launch.py input_mode:=synthetic
 ros2 launch hand_pipeline input_pipeline.launch.py input_mode:=recorded
 ```
+
+The server visual-frame entry point independently switches between a camera and a video file while
+keeping `/visual/input/image_raw` stable for MediaPipe or HaMeR:
+
+```bash
+ros2 launch hand_pipeline visual_input.launch.py visual_input_mode:=camera camera_device:=0
+ros2 launch hand_pipeline visual_input.launch.py visual_input_mode:=video \
+  video_path:=/persistent/data/hand_input.mp4
+```
+
+The reconstruction adapter is still pending; this node provides and verifies its shared RGB input
+boundary. See [switchable visual input](docs/visual_input.md) for timestamps, calibration, looping,
+and server storage rules.
 
 `make smoke-bag` records the raw fixture into a temporary SQLite3 rosbag, confirms the bag has
 exactly five messages, and replays it twice through fresh validator instances. Bags and logs stay
@@ -94,6 +108,7 @@ execution remain gated by the server audit.
 - [Recorded-sequence format](docs/recorded_sequence.md)
 - [Calibration foundation](docs/calibration.md)
 - [CPU retargeting and safety](docs/retargeting.md)
+- [Switchable camera/video input](docs/visual_input.md)
 - [Local reproduction](docs/reproduction.md)
 - [Server bootstrap boundary](docs/server_bootstrap.md)
 - [Architecture decisions](docs/decisions/README.md)

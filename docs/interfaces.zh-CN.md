@@ -116,7 +116,7 @@ ROS 类型：`hand_msgs/msg/EpisodeRecord`。每条记录保存原始观测和�
 
 | Topic | 类型 | QoS | 用途 |
 |---|---|---|---|
-| `/visual/input/image_raw` | `sensor_msgs.Image` | sensor data、best effort、depth 5 | 重建前统一的摄像头/视频帧输入 |
+| `/visual/input/image_raw` | `sensor_msgs/msg/Image` | sensor data、best effort、depth 5 | 重建前统一的摄像头/视频帧输入 |
 | `/hand/observation/raw` | `HandObservation` | sensor data、best effort、depth 5 | 校验前适配器输出 |
 | `/hand/observation` | `HandObservation` | sensor data、best effort、depth 5 | 已接受观测 |
 | `/robot/target` | `RobotTarget` | reliable、volatile、keep last 1 | 最新安全目标 |

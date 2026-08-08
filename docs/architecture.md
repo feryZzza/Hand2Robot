@@ -37,6 +37,25 @@ The validator republishes only accepted messages. Low confidence, unsupported sc
 frames/sources, non-finite values, invalid pixel z, non-monotonic time/sequence, invalid source
 flags, and malformed arrays never reach `/hand/observation`.
 
+## Prepared server visual path
+
+```text
+camera device OR video file
+    visual_input_publisher -> /visual/input/image_raw [sensor_msgs/Image, bgr8]
+                                      |
+                                      v
+                    MediaPipe or HaMeR reconstruction [pending]
+                                      |
+                                      v
+                         /hand/observation/raw
+```
+
+`visual_input.launch.py` selects `camera` or `video` through `visual_input_mode`; both publish the
+same image contract, so the server reconstruction adapter does not branch on transport. Video
+mode validates its file before opening, follows detected FPS and `playback_rate`, optionally
+loops, and waits for a subscriber before decoding. This prepared boundary does not pretend that
+MediaPipe or HaMeR reconstruction has already been implemented.
+
 ## Package responsibilities
 
 | Package | Responsibility | Runtime dependency on ROS2 |
@@ -64,7 +83,8 @@ recovery must extend it without weakening the validation or stale-command bounda
 
 ## Input and evidence paths
 
-The recorded adapter loads and fully validates a versioned JSON sequence before publishing,
+The visual adapter provides a stable raw RGB boundary for live cameras and server-resident video
+files. The recorded adapter loads and fully validates a versioned JSON sequence before publishing,
 waits for discovery, retains capture timestamps, and publishes each frame once. The M3 bag check
 records `/hand/observation/raw` and crosses a fresh validator on each replay, testing
 serialization plus deterministic validation rather than merely counting stored output.

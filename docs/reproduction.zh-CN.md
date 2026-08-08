@@ -21,6 +21,7 @@ make test-unit
 make build-ros
 make smoke-local
 make smoke-recorded
+make smoke-video-input
 make smoke-bag
 make smoke-prototype
 make smoke-prototype-recorded
@@ -29,8 +30,9 @@ make smoke-prototype-watchdog
 
 预期原型证据：
 
-- 59 项无外部依赖的单元/契约/文档测试通过；
+- 66 项无外部依赖的单元/契约/文档测试通过；
 - 三个 ROS2 包全部构建成功；
+- 视频模式发布至少五帧有效的 `160x120` `bgr8` 图像，且时间戳严格递增；
 - 合成模式产生 20 条包含有效有界目标的完整配对记录；
 - 录制模式产生序列 0–4，共五条完整配对记录；
 - 数据源中断产生恰好一个 `STALE_INPUT`、`valid=false` 目标；
@@ -53,6 +55,9 @@ ros2 launch hand_pipeline prototype_pipeline.launch.py \
 
 记录器以排他创建方式打开输出，拒绝覆盖已有 episode。每次运行应选择新路径。回放
 历史数据时使用 `input_mode:=recorded`，并同时设置 `enforce_capture_age:=false`。
+
+无需摄像头即可通过 `make smoke-video-input` 验证服务器式视频输入。它只会在被忽略的
+`local_data/tmp/` 下生成小型临时 MP4，不会下载或提交媒体文件。
 
 ## 沙箱传输警告
 
