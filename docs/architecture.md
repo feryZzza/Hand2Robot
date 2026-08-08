@@ -22,6 +22,10 @@ fully validates a versioned JSON sequence before advertising data, waits for sub
 discovery, retains capture timestamps, and publishes each frame once. Downstream topics and the
 validator are unchanged.
 
+`input_pipeline.launch.py` selects `synthetic` or `recorded` through the `input_mode` launch
+argument. Exactly one adapter runs, while validator node, raw/accepted/status topics, message
+types, and QoS remain identical.
+
 The validator republishes only accepted messages. Low confidence, unsupported schema, empty
 frames/sources, non-finite values, invalid pixel `z`, non-monotonic time/sequence, invalid source
 flags, and malformed arrays never reach `/hand/observation`.

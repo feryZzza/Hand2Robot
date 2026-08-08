@@ -22,7 +22,8 @@ export ROS_LOG_DIR="$log_dir/ros_logs"
 mkdir -p "$log_dir" "$ROS_LOG_DIR"
 
 launch_log="$log_dir/launch.log"
-setsid ros2 launch hand_pipeline recorded_smoke.launch.py >"$launch_log" 2>&1 &
+setsid ros2 launch hand_pipeline input_pipeline.launch.py input_mode:=recorded \
+  >"$launch_log" 2>&1 &
 launch_pid=$!
 
 cleanup() {

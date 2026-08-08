@@ -23,7 +23,8 @@ mkdir -p "$log_dir"
 mkdir -p "$ROS_LOG_DIR"
 
 launch_log="$log_dir/launch.log"
-setsid ros2 launch hand_pipeline synthetic_smoke.launch.py >"$launch_log" 2>&1 &
+setsid ros2 launch hand_pipeline input_pipeline.launch.py input_mode:=synthetic \
+  >"$launch_log" 2>&1 &
 launch_pid=$!
 
 cleanup() {

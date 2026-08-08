@@ -48,6 +48,13 @@ observations and `RUNNING` status, then injects low-confidence observations and 
 `make smoke-recorded` uses the committed five-frame fixture and verifies exact sequence numbers,
 source, accepted count, invalid count, and dropped count through the same validator.
 
+The normal runtime entry point switches adapters without changing downstream nodes:
+
+```bash
+ros2 launch hand_pipeline input_pipeline.launch.py input_mode:=synthetic
+ros2 launch hand_pipeline input_pipeline.launch.py input_mode:=recorded
+```
+
 `make smoke-bag` records the raw fixture into a temporary SQLite3 rosbag, confirms the bag has
 exactly five messages, and replays it twice through fresh validator instances. Bags and logs stay
 under ignored `local_data/tmp/` storage.

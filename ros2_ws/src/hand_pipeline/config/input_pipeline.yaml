@@ -1,0 +1,22 @@
+synthetic_hand_publisher:
+  ros__parameters:
+    frequency_hz: 30.0
+    frame_id: camera_optical_frame
+    source: synthetic
+    handedness: right
+    confidence: 0.99
+    motion_amplitude_m: 0.015
+
+recorded_sequence_player:
+  ros__parameters:
+    playback_rate: 1.0
+    startup_delay_s: 0.5
+    discovery_timeout_s: 5.0
+    minimum_subscription_count: 1
+
+hand_observation_validator:
+  ros__parameters:
+    confidence_threshold: 0.5
+    minimum_confident_joints: 15
+    stale_after_ms: 1000.0
+    status_frequency_hz: 2.0
