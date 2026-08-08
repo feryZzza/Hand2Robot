@@ -84,6 +84,7 @@ class SyntheticHandPublisher(Node):
         self.declare_parameter("handedness", "right")
         self.declare_parameter("confidence", 0.99)
         self.declare_parameter("motion_amplitude_m", 0.015)
+        self.declare_parameter("maximum_messages", 0)
 
         self._frequency_hz = float(self.get_parameter("frequency_hz").value)
         self._frame_id = str(self.get_parameter("frame_id").value)
@@ -92,6 +93,7 @@ class SyntheticHandPublisher(Node):
         self._motion_amplitude_m = float(
             self.get_parameter("motion_amplitude_m").value
         )
+        self._maximum_messages = int(self.get_parameter("maximum_messages").value)
         handedness = str(self.get_parameter("handedness").value).lower()
 
         if self._frequency_hz <= 0.0:
@@ -102,6 +104,8 @@ class SyntheticHandPublisher(Node):
             raise ValueError("source must be non-empty")
         if not 0.0 <= self._confidence <= 1.0:
             raise ValueError("confidence must be in [0, 1]")
+        if self._maximum_messages < 0:
+            raise ValueError("maximum_messages must be non-negative")
         handedness_values = {
             "unknown": HandObservation.HANDEDNESS_UNKNOWN,
             "left": HandObservation.HANDEDNESS_LEFT,
@@ -134,6 +138,11 @@ class SyntheticHandPublisher(Node):
         )
         self._publisher.publish(message)
         self._sequence += 1
+        if self._maximum_messages and self._sequence >= self._maximum_messages:
+            self._timer.cancel()
+            self.get_logger().info(
+                f"stopped after {self._maximum_messages} synthetic messages"
+            )
 
 
 def main(args=None) -> None:

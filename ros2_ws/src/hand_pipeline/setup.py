@@ -13,6 +13,14 @@ setup(
         (f"share/{package_name}", ["package.xml"]),
         (f"share/{package_name}/config", glob("config/*.yaml")),
         (
+            f"share/{package_name}/config/calibration",
+            glob("../../../configs/calibration/*.json"),
+        ),
+        (
+            f"share/{package_name}/config/retargeting",
+            glob("../../../configs/retargeting/*.json"),
+        ),
+        (
             f"share/{package_name}/examples",
             glob("examples/*.json") + glob("examples/*.yaml"),
         ),
@@ -33,6 +41,10 @@ setup(
             "recorded_sequence_player = hand_pipeline.recorded_sequence_player:main",
             "recorded_smoke_check = hand_pipeline.recorded_smoke_check:main",
             "bag_replay_check = hand_pipeline.bag_replay_check:main",
+            "safe_retargeter = hand_pipeline.safe_retargeter:main",
+            "episode_recorder = hand_pipeline.episode_recorder:main",
+            "prototype_smoke_check = hand_pipeline.prototype_smoke_check:main",
+            "prototype_watchdog_check = hand_pipeline.prototype_watchdog_check:main",
         ],
     },
 )

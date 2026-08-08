@@ -249,12 +249,13 @@ class SafeRetargeter:
         *,
         target_timestamp_ns: int,
         monotonic_timestamp_ns: int | None = None,
+        enforce_input_age: bool = True,
     ) -> RobotTargetData:
         now = int(target_timestamp_ns)
         age_ms = (now - observation.timestamp_ns) / 1_000_000.0
-        if age_ms < 0.0:
+        if enforce_input_age and age_ms < 0.0:
             return self._invalid(now, observation.sequence, RetargetStatus.INPUT_INVALID, "input timestamp is in the future")
-        if age_ms > self.config.maximum_input_age_ms:
+        if enforce_input_age and age_ms > self.config.maximum_input_age_ms:
             return self._invalid(now, observation.sequence, RetargetStatus.STALE_INPUT, f"input age {age_ms:.1f} ms exceeds limit")
         if not observation.valid:
             return self._invalid(now, observation.sequence, RetargetStatus.INPUT_INVALID, "observation is marked invalid")

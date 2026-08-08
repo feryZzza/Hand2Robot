@@ -1,4 +1,4 @@
-.PHONY: build-ros doctor git-status smoke-bag smoke-local smoke-recorded test-contract test-unit
+.PHONY: build-ros doctor git-status smoke-bag smoke-local smoke-prototype smoke-prototype-recorded smoke-prototype-watchdog smoke-recorded test-contract test-unit
 
 ROS_SETUP ?= /opt/ros/humble/setup.bash
 
@@ -19,6 +19,15 @@ smoke-recorded: build-ros
 
 smoke-bag: build-ros
 	@./scripts/run_bag_replay_check.sh
+
+smoke-prototype: build-ros
+	@./scripts/run_prototype_smoke.sh
+
+smoke-prototype-recorded: build-ros
+	@./scripts/run_prototype_recorded_smoke.sh
+
+smoke-prototype-watchdog: build-ros
+	@./scripts/run_prototype_watchdog_smoke.sh
 
 test-contract:
 	@python3 -m unittest discover -s tests/unit -p 'test_contract_definition.py' -v

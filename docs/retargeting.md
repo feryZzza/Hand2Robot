@@ -26,6 +26,11 @@ timestamps are rejected. The output policy then applies these checks:
 4. limit accepted Cartesian and finger steps by elapsed source time;
 5. emit one invalid `STALE_INPUT` target when the monotonic watchdog expires.
 
+Live adapters enforce capture-to-target age. Offline replay preserves historical capture times,
+so `prototype_pipeline.launch.py input_mode:=recorded enforce_capture_age:=false` disables only
+that cross-clock age comparison; timestamp ordering, source-time rate limits, and the monotonic
+arrival watchdog remain active.
+
 The five `prototype_*_flexion` joints form the selected local CPU test manifest. They are
 bounded curl proxies in radians, not commands for Panda, Allegro, or any other real asset. The
 server adapter must replace this manifest with checked robot-specific names, limits, IK, and
