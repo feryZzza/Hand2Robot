@@ -3,7 +3,7 @@
 # Hand2Robot project memory
 
 Last verified: 2026-08-08 (Asia/Shanghai)  
-Current milestone: local CPU prototype verified; M5 server IK/simulation pending  
+Current milestone: local CPU prototype and switchable visual input verified; M5 server adaptation pending  
 Canonical remote: `https://github.com/feryZzza/Hand2Robot.git`
 
 This document is the concise, version-controlled memory for future work. It records verified
@@ -69,9 +69,16 @@ reproduction checklist.
   with sequences 0–4, and one stale invalid target after 29 observed valid targets. The One Euro
   deterministic jitter ratio was 0.106169. Evidence is in
   `runs/20260808_local_cpu_prototype_seed0/manifest.yaml`.
-- Documentation localization commit `2845421` gives all 22 English Markdown project documents
-  same-directory Simplified Chinese translations with reciprocal language links. The localization
-  test enforces this policy; the full suite now contains 59 tests.
+- Documentation localization commit `2845421` established same-directory Simplified Chinese
+  translations with reciprocal language links. The policy now covers all 23 English Markdown
+  project documents.
+- Contract commit `4662122` defines one raw `bgr8` image boundary for camera and video sources.
+  Implementation commit `b19f1b1` adds the validated launch-time switch, OpenCV/cv_bridge frame
+  publisher, subscriber discovery, video looping/rate controls, and a camera-free smoke. The full
+  suite contains 66 tests and all three ROS2 packages build. The accepted smoke received five
+  strict-timestamp `160x120` frames from an eight-frame generated MP4; evidence is in
+  `runs/20260808_video_input_smoke_seed0/manifest.yaml`. Follow-up `f9f54da` makes `make doctor`
+  verify visual Python dependencies and advertise video fallback when no camera is detected.
 
 ## Accepted decisions
 
@@ -88,13 +95,17 @@ reproduction checklist.
   server-side acceptance gate.
 - English and Simplified Chinese Markdown pairs are maintained together and checked in CI-style
   local tests; the already-Chinese original requirements under `doc/` are not duplicated.
+- Camera and video-file sources share `/visual/input/image_raw`; reconstruction subscribes once
+  and distinguishes the resulting `HandObservation.source`. Raw video does not impersonate the
+  post-reconstruction `recorded` adapter.
 
 ## Current objectives
 
 1. Obtain `docs/handoff/server_latest.md` populated from a read-only RTX 4090 server audit.
 2. Freeze one licensed robot/hand asset and implement its IK/collision execution adapter on the
    server without changing schema `0.1.0`.
-3. Add the live camera/MediaPipe adapter when hardware and local dependency capacity are present.
+3. Connect one server MediaPipe or HaMeR reconstruction adapter to `/visual/input/image_raw`,
+   validating video mode before camera hardware is available.
 
 ## Pending verification
 
@@ -102,8 +113,8 @@ reproduction checklist.
   snapshot behavior. Validation: complete the server audit guide and update the server handoff.
 - Actual robot asset pair. Current example is Franka/Panda plus Allegro Hand, but this is not
   frozen until server asset and license checks pass.
-- Camera availability and MediaPipe package availability. Validation is deferred until after
-  the synthetic CPU baseline.
+- Physical camera availability and server MediaPipe/HaMeR environment. Video frame transport is
+  verified locally, but representative-video reconstruction and the real camera path are pending.
 - Repository code license. The initial ROS2 package uses `TODO` until the user selects a license;
   no external code or asset should be added under an assumed license.
 
@@ -121,7 +132,9 @@ reproduction checklist.
 1. Run `scripts/server_audit_readonly.sh` on the RTX 4090 host and update the server handoff.
 2. Verify persistent disk, container GPU, Isaac Sim version, asset licenses, and recovery before
    installing or downloading anything large.
-3. Replace the CPU test manifest with one checked server asset manifest, then implement actual IK,
+3. Connect the selected reconstruction backend once to `/visual/input/image_raw` and validate a
+   checksum-recorded server video before testing a physical camera.
+4. Replace the CPU test manifest with one checked server asset manifest, then implement actual IK,
    collision limits, execution feedback, and the 1000-step headless gate.
 
 ## Memory update rules

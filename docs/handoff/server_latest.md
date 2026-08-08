@@ -34,6 +34,12 @@ The repository now includes `scripts/server_audit_readonly.sh` and
 `docs/server_bootstrap.md`. They make no installation or configuration changes. Run the script
 on the actual server and replace this placeholder only with measured output.
 
+The repository also prepares `visual_input.launch.py` with `visual_input_mode:=camera|video`.
+Local video transport is verified, but no server reconstruction result is claimed. On the server,
+run `make smoke-video-input`, then connect MediaPipe or HaMeR once to
+`/visual/input/image_raw`; keep the representative video on persistent storage and record its
+checksum and matching calibration here.
+
 ## Next step
 
 Run the server guide's read-only audit and replace this file with measured values and risks.

@@ -32,6 +32,11 @@
 仓库已经包含 `scripts/server_audit_readonly.sh` 和 `docs/server_bootstrap.md`，它们不会
 执行安装或配置修改。应在真实服务器上运行该脚本，并且只用实测输出替换此占位内容。
 
+仓库还准备了带 `visual_input_mode:=camera|video` 的 `visual_input.launch.py`。本地视频
+传输已验证，但这不代表服务器重建已经成功。在服务器运行 `make smoke-video-input`，
+再让 MediaPipe 或 HaMeR 只连接一次 `/visual/input/image_raw`；代表性视频应留在持久
+存储，并在此记录其校验和与匹配标定。
+
 ## 下一步
 
 运行服务器指南中的只读审计，用实测值和风险替换本文件。

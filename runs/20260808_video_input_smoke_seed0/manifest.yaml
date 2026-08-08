@@ -1,0 +1,36 @@
+run_id: 20260808_video_input_smoke_seed0
+date: 2026-08-08
+timezone: Asia/Shanghai
+git_commit: b19f1b1
+contract_commit: 4662122
+mode: local_generated_video
+command: make smoke-video-input
+input:
+  generator: ffmpeg testsrc
+  codec: mpeg4
+  dimensions_px: [160, 120]
+  frame_rate_hz: 10
+  frame_count: 8
+  sha256: cc864de1b5f6037e2f457f4333bf46c02ba698a0eeb1682158cc5877a2ab4b5a
+configuration:
+  visual_input_mode: video
+  loop_video: false
+  playback_rate: 1.0
+  topic: /visual/input/image_raw
+  frame_id: camera_optical_frame
+results:
+  received_frames_before_success: 5
+  expected_dimensions_px: [160, 120]
+  encoding: bgr8
+  payload_size_valid: true
+  timestamps_strictly_increasing: true
+  ros2_packages_built: 3
+  tests_passed: 66
+artifacts:
+  - path: local_data/tmp/video_input_smoke/run.WjQsCe/input.mp4
+    tracked: false
+    sha256: cc864de1b5f6037e2f457f4333bf46c02ba698a0eeb1682158cc5877a2ab4b5a
+limitations:
+  - No physical camera was available, so camera-device opening remains pending.
+  - MediaPipe and HaMeR reconstruction were not installed or exercised.
+  - Video frames use playback ROS time, not original media presentation timestamps.
