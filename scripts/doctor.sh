@@ -42,6 +42,13 @@ for command_name in git python3 ros2 colcon rsync ffmpeg; do
   fi
 done
 
+if python3 -c 'import cv2; from cv_bridge import CvBridge; from sensor_msgs.msg import Image' \
+  >/dev/null 2>&1; then
+  printf 'visual input Python dependencies: OK\n'
+else
+  printf 'INFO: cv2, cv_bridge, or sensor_msgs Python support is missing; camera/video input is unavailable.\n'
+fi
+
 printf 'ROS_DISTRO: %s\n' "${ROS_DISTRO:-not sourced}"
 
 if git -C "$project_root" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
@@ -55,7 +62,7 @@ fi
 camera_count="$(find /dev -maxdepth 1 -name 'video*' -print 2>/dev/null | wc -l)"
 printf 'camera devices: %s\n' "$camera_count"
 if [ "$camera_count" -eq 0 ]; then
-  printf 'INFO: no camera detected; recorded or synthetic input remains available.\n'
+  printf 'INFO: no camera detected; video-file, recorded, or synthetic input remains available.\n'
 fi
 
 exit "$hard_fail"
