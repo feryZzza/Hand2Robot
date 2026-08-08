@@ -12,6 +12,10 @@ setup(
         ("share/ament_index/resource_index/packages", [f"resource/{package_name}"]),
         (f"share/{package_name}", ["package.xml"]),
         (f"share/{package_name}/config", glob("config/*.yaml")),
+        (
+            f"share/{package_name}/examples",
+            glob("examples/*.json") + glob("examples/*.yaml"),
+        ),
         (f"share/{package_name}/launch", glob("launch/*.launch.py")),
     ],
     install_requires=["setuptools"],
@@ -26,6 +30,8 @@ setup(
             "hand_observation_validator = hand_pipeline.observation_validator:main",
             "hand_smoke_check = hand_pipeline.smoke_check:main",
             "hand_fault_smoke_check = hand_pipeline.fault_smoke_check:main",
+            "recorded_sequence_player = hand_pipeline.recorded_sequence_player:main",
+            "recorded_smoke_check = hand_pipeline.recorded_smoke_check:main",
         ],
     },
 )

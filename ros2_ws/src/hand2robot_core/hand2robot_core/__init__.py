@@ -8,6 +8,12 @@ from .validation import (
     ValidationCode,
     ValidationResult,
 )
+from .recorded_sequence import (
+    RecordedFrame,
+    RecordedPose,
+    RecordedSequence,
+    load_recorded_sequence,
+)
 
 __all__ = [
     "EXPECTED_SCHEMA_VERSION",
@@ -16,4 +22,8 @@ __all__ = [
     "HandObservationValidator",
     "ValidationCode",
     "ValidationResult",
+    "RecordedFrame",
+    "RecordedPose",
+    "RecordedSequence",
+    "load_recorded_sequence",
 ]

@@ -36,12 +36,16 @@ Build and verify the current CPU-only baseline:
 make test-unit
 make build-ros
 make smoke-local
+make smoke-recorded
 ```
 
 The smoke target launches a deterministic 21-joint source and validator, verifies accepted
 observations and `RUNNING` status, then injects low-confidence observations and verifies
 `DEGRADED` diagnostics. It uses localhost-only ROS2 domain 72 by default; override it with
 `HAND2ROBOT_ROS_DOMAIN_ID` if that domain is already in use.
+
+`make smoke-recorded` uses the committed five-frame fixture and verifies exact sequence numbers,
+source, accepted count, invalid count, and dropped count through the same validator.
 
 ## Project records
 
@@ -51,6 +55,7 @@ observations and `RUNNING` status, then injects low-confidence observations and 
 - [Interface contract](docs/interfaces.md)
 - [Coordinate-frame contract](docs/frames.md)
 - [Current architecture](docs/architecture.md)
+- [Recorded-sequence format](docs/recorded_sequence.md)
 - [Architecture decisions](docs/decisions/README.md)
 - [Local/server handoff](docs/handoff/README.md)
 

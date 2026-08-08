@@ -1,0 +1,17 @@
+name: recorded_hand_static_v0.1
+schema_version: 0.1.0
+source: recorded_fixture
+duration_s: 0.4
+nominal_rate_hz: 10.0
+expected_frames: 5
+topics:
+  - /hand/observation/raw
+frames:
+  - camera_optical_frame
+units:
+  position_2d: pixel
+  position_3d: metre
+  timestamp: nanosecond
+sha256: 73dac677df09df1ab6d82b78710911025cf8b34d0c4e84bc34f42c185802c725
+size_bytes: 2431
+notes: Static deterministic CPU fixture; no image payload or personal data.

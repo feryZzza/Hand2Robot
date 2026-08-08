@@ -17,6 +17,11 @@ hand_observation_validator
 hand_smoke_check / low_confidence_probe
 ```
 
+`recorded_sequence_player` is an alternate publisher for `/hand/observation/raw`. It loads and
+fully validates a versioned JSON sequence before advertising data, waits for subscriber
+discovery, retains capture timestamps, and publishes each frame once. Downstream topics and the
+validator are unchanged.
+
 The validator republishes only accepted messages. Low confidence, unsupported schema, empty
 frames/sources, non-finite values, invalid pixel `z`, non-monotonic time/sequence, invalid source
 flags, and malformed arrays never reach `/hand/observation`.
