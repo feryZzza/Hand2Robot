@@ -1,4 +1,4 @@
-.PHONY: build-ros doctor git-status test-contract
+.PHONY: build-ros doctor git-status smoke-local test-contract test-unit
 
 ROS_SETUP ?= /opt/ros/humble/setup.bash
 
@@ -11,5 +11,12 @@ doctor:
 git-status:
 	@git status --short --branch
 
+smoke-local: build-ros
+	@./scripts/run_local_smoke.sh
+
 test-contract:
 	@python3 -m unittest discover -s tests/unit -p 'test_contract_definition.py' -v
+
+test-unit:
+	@PYTHONPATH=ros2_ws/src/hand2robot_core \
+		python3 -m unittest discover -s tests/unit -p 'test_*.py' -v

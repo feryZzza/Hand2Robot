@@ -30,6 +30,19 @@ make doctor
 `make doctor` is read-only. It reports local disk limits, ROS2 availability, repository
 state, and connected camera devices.
 
+Build and verify the current CPU-only baseline:
+
+```bash
+make test-unit
+make build-ros
+make smoke-local
+```
+
+The smoke target launches a deterministic 21-joint source and validator, verifies accepted
+observations and `RUNNING` status, then injects low-confidence observations and verifies
+`DEGRADED` diagnostics. It uses localhost-only ROS2 domain 72 by default; override it with
+`HAND2ROBOT_ROS_DOMAIN_ID` if that domain is already in use.
+
 ## Project records
 
 - [Current project memory](docs/project_memory.md)
@@ -37,6 +50,7 @@ state, and connected camera devices.
 - [Git workflow](docs/git_workflow.md)
 - [Interface contract](docs/interfaces.md)
 - [Coordinate-frame contract](docs/frames.md)
+- [Current architecture](docs/architecture.md)
 - [Architecture decisions](docs/decisions/README.md)
 - [Local/server handoff](docs/handoff/README.md)
 
