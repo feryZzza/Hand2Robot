@@ -1,0 +1,65 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# ROS2 / colcon
+build/
+install/
+log/
+ros2_ws/build/
+ros2_ws/install/
+ros2_ws/log/
+
+# Editors and operating systems
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Local data and generated artifacts
+local_data/*
+!local_data/README.md
+datasets/
+artifacts/
+cache/
+checkpoints/
+models/
+*.bag
+*.db3
+*.mcap
+*.mp4
+*.mov
+*.avi
+*.ckpt
+*.pth
+*.pt
+*.onnx
+
+# Track run provenance, not heavy run outputs
+runs/*
+!runs/README.md
+!runs/*/
+runs/*/*
+!runs/*/manifest.yaml
+!runs/*/plan.md
+
+# Temporary files
+tmp/
+*.tmp
+*.log
