@@ -37,6 +37,7 @@ make test-unit
 make build-ros
 make smoke-local
 make smoke-recorded
+make smoke-bag
 ```
 
 The smoke target launches a deterministic 21-joint source and validator, verifies accepted
@@ -46,6 +47,10 @@ observations and `RUNNING` status, then injects low-confidence observations and 
 
 `make smoke-recorded` uses the committed five-frame fixture and verifies exact sequence numbers,
 source, accepted count, invalid count, and dropped count through the same validator.
+
+`make smoke-bag` records the raw fixture into a temporary SQLite3 rosbag, confirms the bag has
+exactly five messages, and replays it twice through fresh validator instances. Bags and logs stay
+under ignored `local_data/tmp/` storage.
 
 ## Project records
 

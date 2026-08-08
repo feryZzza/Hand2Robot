@@ -17,12 +17,16 @@ class RecordedSequencePlayer(Node):
         self.declare_parameter("playback_rate", 1.0)
         self.declare_parameter("startup_delay_s", 0.5)
         self.declare_parameter("discovery_timeout_s", 5.0)
+        self.declare_parameter("minimum_subscription_count", 1)
 
         sequence_path = str(self.get_parameter("sequence_path").value)
         self._playback_rate = float(self.get_parameter("playback_rate").value)
         self._startup_delay_s = float(self.get_parameter("startup_delay_s").value)
         self._discovery_timeout_s = float(
             self.get_parameter("discovery_timeout_s").value
+        )
+        self._minimum_subscription_count = int(
+            self.get_parameter("minimum_subscription_count").value
         )
         if not sequence_path:
             raise ValueError("sequence_path must be provided")
@@ -32,6 +36,8 @@ class RecordedSequencePlayer(Node):
             raise ValueError("startup_delay_s must be non-negative")
         if self._discovery_timeout_s <= 0.0:
             raise ValueError("discovery_timeout_s must be positive")
+        if self._minimum_subscription_count <= 0:
+            raise ValueError("minimum_subscription_count must be positive")
 
         self._sequence: RecordedSequence = load_recorded_sequence(sequence_path)
         self._publisher = self.create_publisher(
@@ -50,12 +56,16 @@ class RecordedSequencePlayer(Node):
 
     def _tick(self) -> None:
         now = time.monotonic()
-        if self._publisher.get_subscription_count() == 0:
+        if self._publisher.get_subscription_count() < self._minimum_subscription_count:
             if (
                 not self._discovery_error_reported
                 and now - self._discovery_started_at >= self._discovery_timeout_s
             ):
-                self.get_logger().error("no raw-observation subscriber discovered")
+                self.get_logger().error(
+                    "insufficient raw-observation subscribers: "
+                    f"need {self._minimum_subscription_count}, "
+                    f"found {self._publisher.get_subscription_count()}"
+                )
                 self._discovery_error_reported = True
             return
 

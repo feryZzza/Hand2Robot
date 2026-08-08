@@ -61,3 +61,7 @@ localhost, and uses a dedicated ROS domain. Its two checks are:
    the stable error code is `low_confidence`.
 
 ROS build/install/log output and smoke logs are local generated state and are excluded from Git.
+
+The M3 bag check records `/hand/observation/raw`, not the already validated topic. Each replay
+therefore crosses a new validator instance before its accepted sequences are counted. This tests
+both serialization and deterministic validation rather than merely counting stored output.

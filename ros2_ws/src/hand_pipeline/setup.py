@@ -32,6 +32,7 @@ setup(
             "hand_fault_smoke_check = hand_pipeline.fault_smoke_check:main",
             "recorded_sequence_player = hand_pipeline.recorded_sequence_player:main",
             "recorded_smoke_check = hand_pipeline.recorded_smoke_check:main",
+            "bag_replay_check = hand_pipeline.bag_replay_check:main",
         ],
     },
 )

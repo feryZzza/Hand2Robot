@@ -3,6 +3,7 @@ recorded_sequence_player:
     playback_rate: 1.0
     startup_delay_s: 0.5
     discovery_timeout_s: 5.0
+    minimum_subscription_count: 1
 
 hand_observation_validator:
   ros__parameters:
