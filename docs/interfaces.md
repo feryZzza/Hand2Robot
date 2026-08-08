@@ -84,7 +84,8 @@ timestamp is status creation time and `frame_id` is empty because the message is
 States are `INIT`, `CALIBRATING`, `READY`, `RUNNING`, `DEGRADED`, and `ERROR`. Counters are
 monotonic during one node process. `drop_rate` is `dropped_count / (received_count +
 dropped_count)` and is zero when the denominator is zero. Latency is capture-to-status time on a
-shared clock and must not be reported as a valid measurement when clock domains are unknown.
+shared clock. `end_to_end_latency_valid=false` whenever clock domains are unknown or a negative
+delta is observed; the accompanying numeric value is then a finite zero placeholder.
 `last_error_code` is stable and machine-readable; `last_error_message` is diagnostic text.
 
 ## `EpisodeRecord`

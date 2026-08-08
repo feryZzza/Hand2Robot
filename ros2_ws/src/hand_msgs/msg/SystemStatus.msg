@@ -12,6 +12,7 @@ string active_source
 float32 input_rate_hz
 float32 input_age_ms
 float32 end_to_end_latency_ms
+bool end_to_end_latency_valid
 float32 drop_rate
 uint64 received_count
 uint64 valid_count

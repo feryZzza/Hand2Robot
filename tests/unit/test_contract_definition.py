@@ -45,6 +45,11 @@ class ContractDefinitionTest(unittest.TestCase):
         }
         self.assertTrue(expected.issubset(lines))
 
+    def test_status_marks_latency_measurement_validity(self) -> None:
+        lines = active_lines(MSG_ROOT / "SystemStatus.msg")
+        self.assertIn("float32 end_to_end_latency_ms", lines)
+        self.assertIn("bool end_to_end_latency_valid", lines)
+
     def test_documented_joint_order_is_complete_and_unique(self) -> None:
         text = (PROJECT_ROOT / "docs" / "interfaces.md").read_text(encoding="utf-8")
         names = (
