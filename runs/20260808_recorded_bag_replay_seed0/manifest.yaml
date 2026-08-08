@@ -1,0 +1,41 @@
+run_id: 20260808_recorded_bag_replay_seed0
+git_commit: 83943685bc1119e1e0623b190c9a3442cb61dfde
+config: ros2_ws/src/hand_pipeline/config/input_pipeline.yaml
+data_version: recorded_hand_static_v0.1@73dac677df09df1ab6d82b78710911025cf8b34d0c4e84bc34f42c185802c725
+hardware:
+  host_role: local_cpu
+  cpu: 13th Gen Intel Core i5-13500HX
+  ram_total_gib: 15
+  ros_distro: humble
+  ros_domain_id: 74
+command: ./scripts/run_bag_replay_check.sh
+metrics:
+  source_path:
+    published_count: 5
+    accepted_sequences: [0, 1, 2, 3, 4]
+    source: recorded_fixture
+  bag:
+    storage_id: sqlite3
+    topic: /hand/observation/raw
+    message_count: 5
+    duration_s: 0.398128994
+    size_bytes: 37876
+  replay_1:
+    accepted_count: 5
+    accepted_sequences: [0, 1, 2, 3, 4]
+    source: recorded_fixture
+  replay_2:
+    accepted_count: 5
+    accepted_sequences: [0, 1, 2, 3, 4]
+    source: recorded_fixture
+artifacts:
+  - path: local_data/tmp/bag_replay/run.DOx3os/recorded_fixture_bag/recorded_fixture_bag_0.db3
+    size_bytes: 32768
+    sha256: 84de51dbb717e048fd434e34bebf6aa7e240dd13d7d608bf27783520e42a551b
+    tracked_in_git: false
+  - path: local_data/tmp/bag_replay/run.DOx3os/recorded_fixture_bag/metadata.yaml
+    size_bytes: 1012
+    sha256: 8163c754dbbe8ab65325a56ee533e18b92eca0bfba59221084eade287b650138
+    tracked_in_git: false
+decision: keep
+reason: The stored raw topic contains exactly five messages and two fresh validators reproduce the same ordered accepted sequence.

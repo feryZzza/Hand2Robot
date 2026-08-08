@@ -1,7 +1,7 @@
 # Hand2Robot project memory
 
 Last verified: 2026-08-08 (Asia/Shanghai)  
-Current milestone: M3 — capture and replay  
+Current milestone: M4 — calibration and retargeting foundation  
 Canonical remote: `https://github.com/feryZzza/Hand2Robot.git`
 
 This document is the concise, version-controlled memory for future work. It records verified
@@ -43,6 +43,13 @@ reproduction checklist.
 - The committed-code M2 smoke recorded 15 valid/0 invalid/0 dropped at 30 Hz with a last sampled
   latency of 3.21 ms. Its fault phase rejected 9/9 low-confidence samples with `DEGRADED` and
   `low_confidence`. Evidence is in `runs/20260808_local_synthetic_smoke_seed0/manifest.yaml`.
+- M3 commit `254e318` adds a dependency-free recorded-sequence schema/loader/player and a
+  checksum-locked five-frame fixture. Commit `bbbdf27` adds raw rosbag capture plus two fresh
+  validator replays; commit `8394368` unifies synthetic/recorded adapter selection by launch
+  configuration. Twenty-three tests pass.
+- The final M3 bag contains exactly five raw messages over 0.398 seconds. Both replays produced
+  accepted sequences `[0, 1, 2, 3, 4]` from `recorded_fixture`. Evidence and bag hashes are in
+  `runs/20260808_recorded_bag_replay_seed0/manifest.yaml`.
 
 ## Accepted decisions
 
@@ -57,8 +64,8 @@ reproduction checklist.
 
 ## Current objectives
 
-1. Add deterministic recorded-sequence input and short rosbag capture/replay without requiring a
-   camera.
+1. Implement ROS-independent SE(3) calibration loading, transform validation, and unit tests on
+   the recorded fixture.
 2. Obtain `docs/handoff/server_latest.md` populated from a read-only RTX 4090 server audit.
 
 ## Pending verification
@@ -83,9 +90,10 @@ reproduction checklist.
 
 ## Next actions
 
-1. Define a small recorded-sequence fixture/manifest and adapter using the same raw topic.
-2. Record and replay a short synthetic rosbag twice, comparing counts and diagnostics.
-3. Keep camera/MediaPipe optional until a camera appears and local package space is approved.
+1. Add a versioned camera-to-robot calibration file and strict quaternion/frame validation.
+2. Test identity, inverse, composition order, and unit-error detection.
+3. Feed calibrated recorded wrist points toward the retargeting boundary without publishing a
+   robot command yet.
 
 ## Memory update rules
 
