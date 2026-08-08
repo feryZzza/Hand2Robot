@@ -1,0 +1,14 @@
+string schema_version
+string episode_id
+uint32 step_index
+builtin_interfaces/Time record_timestamp
+hand_msgs/HandObservation observation
+hand_msgs/RobotTarget action
+builtin_interfaces/Time observation_timestamp
+builtin_interfaces/Time action_timestamp
+bool observation_missing
+bool action_missing
+string task
+bool episode_complete
+bool success
+string failure_reason

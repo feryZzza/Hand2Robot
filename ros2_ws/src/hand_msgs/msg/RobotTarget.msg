@@ -1,0 +1,20 @@
+uint16 STATUS_OK=0
+uint16 STATUS_INPUT_INVALID=1
+uint16 STATUS_CALIBRATION_INVALID=2
+uint16 STATUS_IK_FAILED=3
+uint16 STATUS_OUT_OF_WORKSPACE=4
+uint16 STATUS_JOINT_LIMIT=5
+uint16 STATUS_STALE_INPUT=6
+
+std_msgs/Header header
+string schema_version
+uint32 sequence
+geometry_msgs/Pose end_effector_pose
+string[] finger_joint_names
+float64[] finger_joint_positions_rad
+float64 max_ee_linear_velocity_m_s
+float64 max_ee_angular_velocity_rad_s
+float64[] max_finger_velocity_rad_s
+bool valid
+uint16 status_code
+string status_message

@@ -1,0 +1,21 @@
+uint8 STATE_INIT=0
+uint8 STATE_CALIBRATING=1
+uint8 STATE_READY=2
+uint8 STATE_RUNNING=3
+uint8 STATE_DEGRADED=4
+uint8 STATE_ERROR=5
+
+std_msgs/Header header
+string schema_version
+uint8 state
+string active_source
+float32 input_rate_hz
+float32 input_age_ms
+float32 end_to_end_latency_ms
+float32 drop_rate
+uint64 received_count
+uint64 valid_count
+uint64 invalid_count
+uint64 dropped_count
+string last_error_code
+string last_error_message
