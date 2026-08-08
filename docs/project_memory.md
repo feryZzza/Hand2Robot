@@ -1,7 +1,7 @@
 # Hand2Robot project memory
 
 Last verified: 2026-08-08 (Asia/Shanghai)  
-Current milestone: M0 — repository bootstrap and shared-contract definition  
+Current milestone: M1 — shared-contract definition  
 Canonical remote: `https://github.com/feryZzza/Hand2Robot.git`
 
 This document is the concise, version-controlled memory for future work. It records verified
@@ -29,7 +29,8 @@ reproduction checklist.
 - No `/dev/video*` device was present during the audit. Synthetic and recorded inputs are the
   non-blocking baseline.
 - No GPU-server handoff or verified server environment report is present yet.
-- The GitHub remote was empty when repository initialization began.
+- The GitHub remote was empty when repository initialization began. Baseline commit `2e3ccca`
+  initialized and was pushed to `main` on 2026-08-08.
 
 ## Accepted decisions
 
@@ -44,11 +45,10 @@ reproduction checklist.
 
 ## Current objectives
 
-1. Finish the lightweight repository skeleton and project-memory system.
-2. Define version 0.1 drafts for `HandObservation`, `RobotTarget`, `SystemStatus`, and
+1. Define version 0.1 drafts for `HandObservation`, `RobotTarget`, `SystemStatus`, and
    `EpisodeRecord`.
-3. Implement a CPU-only ROS2 synthetic-input-to-diagnostics smoke path.
-4. Obtain `docs/handoff/server_latest.md` populated from a read-only RTX 4090 server audit.
+2. Implement a CPU-only ROS2 synthetic-input-to-diagnostics smoke path.
+3. Obtain `docs/handoff/server_latest.md` populated from a read-only RTX 4090 server audit.
 
 ## Pending verification
 
@@ -70,7 +70,7 @@ reproduction checklist.
 
 ## Next actions
 
-1. Commit and push the M0 repository baseline.
+1. Create and push `work/local` from the verified M0 baseline.
 2. Draft and review interface and frame contracts as a separate `contract:` commit.
 3. Create ROS2 `hand_msgs` plus synthetic publisher and validator packages.
 4. Add deterministic CPU tests for valid and malformed observations.

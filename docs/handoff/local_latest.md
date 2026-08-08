@@ -1,7 +1,7 @@
 # Local handoff
 
 - Updated: 2026-08-08 (Asia/Shanghai)
-- Git commit: pending initial baseline commit
+- Git commit: `2e3ccca` (`main`, pushed to `origin/main`)
 - Branch: `main` during bootstrap; local work continues on `work/local`
 - Schema version: draft `0.1.0`
 - Disk: `/` approximately 4.1 GiB free; `/home` approximately 24 GiB free
@@ -12,6 +12,7 @@
 - Read the local guide, server guide, and full 29-page implementation checklist.
 - Audited the initial workspace and core local commands.
 - Established repository memory, ADR, handoff, Git workflow, and safety rules.
+- Ran the read-only local doctor and pushed the verified M0 baseline to GitHub.
 
 ## Local verification
 
