@@ -50,6 +50,75 @@ def rotate_vector(quaternion: QuaternionXyzw, vector: Vector3) -> Vector3:
     return (rotated[0], rotated[1], rotated[2])
 
 
+def quaternion_from_basis(
+    x_axis: Vector3,
+    y_axis: Vector3,
+    z_axis: Vector3,
+) -> QuaternionXyzw:
+    """Convert an orthonormal right-handed basis (matrix columns) to xyzw."""
+
+    x = _finite_tuple(x_axis, 3, "x_axis")
+    y = _finite_tuple(y_axis, 3, "y_axis")
+    z = _finite_tuple(z_axis, 3, "z_axis")
+    columns = (x, y, z)
+    for column in columns:
+        if abs(sum(value * value for value in column) - 1.0) > 1e-6:
+            raise ValueError("basis axes must be unit length")
+    if any(
+        abs(sum(columns[a][index] * columns[b][index] for index in range(3)))
+        > 1e-6
+        for a, b in ((0, 1), (0, 2), (1, 2))
+    ):
+        raise ValueError("basis axes must be orthogonal")
+    handedness = (
+        x[0] * (y[1] * z[2] - y[2] * z[1])
+        - y[0] * (x[1] * z[2] - x[2] * z[1])
+        + z[0] * (x[1] * y[2] - x[2] * y[1])
+    )
+    if abs(handedness - 1.0) > 1e-6:
+        raise ValueError("basis must be right-handed")
+
+    # Matrix rows for a column-basis rotation.
+    m00, m01, m02 = x[0], y[0], z[0]
+    m10, m11, m12 = x[1], y[1], z[1]
+    m20, m21, m22 = x[2], y[2], z[2]
+    trace = m00 + m11 + m22
+    if trace > 0.0:
+        scale = sqrt(trace + 1.0) * 2.0
+        quaternion = (
+            (m21 - m12) / scale,
+            (m02 - m20) / scale,
+            (m10 - m01) / scale,
+            0.25 * scale,
+        )
+    elif m00 > m11 and m00 > m22:
+        scale = sqrt(1.0 + m00 - m11 - m22) * 2.0
+        quaternion = (
+            0.25 * scale,
+            (m01 + m10) / scale,
+            (m02 + m20) / scale,
+            (m21 - m12) / scale,
+        )
+    elif m11 > m22:
+        scale = sqrt(1.0 + m11 - m00 - m22) * 2.0
+        quaternion = (
+            (m01 + m10) / scale,
+            0.25 * scale,
+            (m12 + m21) / scale,
+            (m02 - m20) / scale,
+        )
+    else:
+        scale = sqrt(1.0 + m22 - m00 - m11) * 2.0
+        quaternion = (
+            (m02 + m20) / scale,
+            (m12 + m21) / scale,
+            0.25 * scale,
+            (m10 - m01) / scale,
+        )
+    norm = quaternion_norm(quaternion)
+    return tuple(value / norm for value in quaternion)
+
+
 @dataclass(frozen=True)
 class RigidTransform:
     """`T_parent_child`: map child-frame points into the parent frame."""

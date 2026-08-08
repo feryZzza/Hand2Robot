@@ -5,7 +5,7 @@ import tempfile
 import unittest
 
 from hand2robot_core.calibration import load_calibration, transform_observation_points
-from hand2robot_core.geometry import RigidTransform
+from hand2robot_core.geometry import RigidTransform, quaternion_from_basis, rotate_vector
 from hand2robot_core.recorded_sequence import load_recorded_sequence
 
 
@@ -67,6 +67,23 @@ class RigidTransformTest(unittest.TestCase):
         transform_c_d = RigidTransform.identity("c")
         with self.assertRaisesRegex(ValueError, "frame mismatch"):
             transform_a_b.compose(transform_c_d)
+
+    def test_basis_to_quaternion_preserves_axes(self) -> None:
+        quaternion = quaternion_from_basis(
+            (0.0, 1.0, 0.0),
+            (-1.0, 0.0, 0.0),
+            (0.0, 0.0, 1.0),
+        )
+        assert_point_close(self, rotate_vector(quaternion, (1.0, 0.0, 0.0)), (0.0, 1.0, 0.0))
+        assert_point_close(self, rotate_vector(quaternion, (0.0, 1.0, 0.0)), (-1.0, 0.0, 0.0))
+
+    def test_basis_to_quaternion_rejects_reflection(self) -> None:
+        with self.assertRaisesRegex(ValueError, "right-handed"):
+            quaternion_from_basis(
+                (1.0, 0.0, 0.0),
+                (0.0, 1.0, 0.0),
+                (0.0, 0.0, -1.0),
+            )
 
 
 class CalibrationTest(unittest.TestCase):

@@ -1,0 +1,27 @@
+{
+  "schema_version": "0.1.0",
+  "output_frame": "robot_base",
+  "target_handedness": "right",
+  "target_palm_width_m": 0.085,
+  "minimum_palm_width_m": 0.02,
+  "workspace_min_m": [0.25, -0.40, 0.75],
+  "workspace_max_m": [0.85, 0.40, 1.50],
+  "finger_joint_names": [
+    "prototype_thumb_flexion",
+    "prototype_index_flexion",
+    "prototype_middle_flexion",
+    "prototype_ring_flexion",
+    "prototype_little_flexion"
+  ],
+  "finger_position_min_rad": [0.0, 0.0, 0.0, 0.0, 0.0],
+  "finger_position_max_rad": [1.2, 1.4, 1.4, 1.4, 1.4],
+  "max_ee_linear_velocity_m_s": 0.25,
+  "max_ee_angular_velocity_rad_s": 1.0,
+  "max_finger_velocity_rad_s": [2.0, 2.5, 2.5, 2.5, 2.5],
+  "maximum_input_age_ms": 500.0,
+  "one_euro_filter": {
+    "min_cutoff_hz": 1.0,
+    "beta": 5.0,
+    "derivative_cutoff_hz": 1.0
+  }
+}
