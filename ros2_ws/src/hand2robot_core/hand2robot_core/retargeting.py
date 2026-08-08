@@ -417,7 +417,7 @@ class SafeRetargeter:
         *,
         mapping: str = "unavailable",
     ) -> RobotTargetData:
-        return RobotTargetData(
+        target = RobotTargetData(
             timestamp_ns=timestamp_ns,
             frame_id=self.config.output_frame,
             schema_version=self.config.schema_version,
@@ -435,3 +435,5 @@ class SafeRetargeter:
             mapping=mapping,
             rate_limited=False,
         )
+        self._last_target = target
+        return target

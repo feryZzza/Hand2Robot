@@ -68,6 +68,33 @@ class SafeRetargeterTest(unittest.TestCase):
         self.assertFalse(target.valid)
         self.assertEqual(target.status_code, RetargetStatus.OUT_OF_WORKSPACE)
 
+    def test_invalid_target_supersedes_previous_valid_target(self) -> None:
+        retargeter = self.make_retargeter()
+        retargeter.retarget(
+            self.observation,
+            target_timestamp_ns=self.observation.timestamp_ns + 1_000_000,
+            monotonic_timestamp_ns=1_000_000_000,
+        )
+        points = tuple((x + 1.0, y, z) for x, y, z in self.observation.joints_3d_m)
+        invalid_observation = replace(
+            self.observation,
+            sequence=1,
+            timestamp_ns=self.observation.timestamp_ns + 100_000_000,
+            joints_3d_m=points,
+        )
+        invalid = retargeter.retarget(
+            invalid_observation,
+            target_timestamp_ns=invalid_observation.timestamp_ns + 1_000_000,
+            monotonic_timestamp_ns=1_100_000_000,
+        )
+        self.assertFalse(invalid.valid)
+        self.assertIsNone(
+            retargeter.watchdog_target(
+                target_timestamp_ns=invalid_observation.timestamp_ns + 600_000_000,
+                monotonic_timestamp_ns=1_700_000_000,
+            )
+        )
+
     def test_rejects_missing_required_finger_joint(self) -> None:
         valid = list(self.observation.joints_3d_valid)
         valid[8] = False
