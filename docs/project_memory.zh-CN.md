@@ -2,8 +2,8 @@
 
 # Hand2Robot 项目记忆
 
-最后验证：2026-08-08（Asia/Shanghai）  
-当前里程碑：本地 CPU 原型和可切换视觉输入已验证；M5 服务器适配待完成  
+最后验证：2026-08-29（Asia/Shanghai）  
+当前里程碑：RTX 4090 实例上服务器 L0-L2 环境已验证；Isaac Sim 与重建适配待完成  
 规范远程仓库：`https://github.com/feryZzza/Hand2Robot.git`
 
 本文件是供后续工作使用的简洁、受版本控制的项目记忆。它记录已验证事实和当前决策，
@@ -72,6 +72,25 @@
   构建成功。已接受 smoke 从八帧生成 MP4 中收到五帧时间戳严格递增的 `160x120`
   图像；证据位于 `runs/20260808_video_input_smoke_seed0/manifest.yaml`。补充提交
   `f9f54da` 使 `make doctor` 检查视觉 Python 依赖，并在无摄像头时提示视频回退。
+- 服务器提交 `f7a0daf` 记录了第一批经过验证的 GPU 服务器事实。只读审计在一台 AutoDL
+  容器上执行：一块 RTX 4090（24564 MiB，驱动 580.105.08，驱动报告 CUDA 13.0）、
+  128 个 Xeon 8358P 逻辑核、1.0 TiB 内存、30 GB `/` overlay，以及挂载在
+  `/root/autodl-tmp` 的 XFS 持久盘，实测 **50 GB**，而非此前假定的 300 GB。没有
+  Docker、没有 Podman、没有 `systemd`，也没有 `/dev/video*` 设备。实测值见
+  `docs/server_environment.zh-CN.md`，证据位于
+  `/root/autodl-tmp/embodied/artifacts/audit/`。
+- 服务器 L0-L2 层已安装并验证：驱动与 GPU、L1 工具链，以及基于 Ubuntu 系统
+  Python 3.10.12 ABI 构建的 ROS2 Humble desktop、colcon、rosbag2、tf2、cv_bridge 和
+  OpenCV 4.5.4。仓库全部九项检查在服务器上通过：`doctor.sh` 退出码 0 且视觉输入依赖
+  OK、66 项单元测试通过、colcon 构建三个包，普通、录制、视频输入、bag 回放和三个
+  原型 smoke 都复现出与本地基线一致的数量、序列和诊断。
+- 服务器上必须使用 `scripts/server_ros2_env.sh`，因为 Miniconda base 的 `python3` 在
+  `PATH` 中位于 `/usr/bin` 之前，会让 ROS2 找不到 `cv2`、`cv_bridge` 和 `rclpy`。该脚本
+  把系统解释器放在最前面，并把 DDS 固定为 `ROS_LOCALHOST_ONLY=1` 与 domain 72。
+- 新增第四个服务器 Conda 环境 `h2r-sim`（Python 3.12.14），原因是 Isaac Sim 6.0.1 要求
+  Python 3.12，无法与 ROS2 依赖的 3.10 环境共用。另外三个服务器环境
+  （`h2r-core`、`h2r-reconstruction`、`h2r-policy`）仍为 Python 3.10.20，且只含
+  Python、pip、setuptools 和 wheel。
 
 ## 已接受决策
 
@@ -92,16 +111,25 @@
 
 ## 当前目标
 
-1. 使用只读 RTX 4090 服务器审计结果填写 `docs/handoff/server_latest.md`。
-2. 冻结一个有许可证的机器人/手部资产，并在不改变 schema `0.1.0` 的情况下实现其
+1. 在启动任何长任务前，确认 AutoDL 数据盘的持久性、快照和恢复行为。
+2. 在 `h2r-sim` 中完成 Isaac Sim 6.0.1 安装并验证 headless 场景，随后制定与实测
+   50 GB 数据盘相匹配的保留策略。
+3. 冻结一个有许可证的机器人/手部资产，并在不改变 schema `0.1.0` 的情况下实现其
    IK/碰撞执行适配器。
-3. 把一个服务器 MediaPipe 或 HaMeR 重建适配器连接到 `/visual/input/image_raw`，先于
+4. 把一个服务器 MediaPipe 或 HaMeR 重建适配器连接到 `/visual/input/image_raw`，先于
    摄像头硬件使用视频模式完成验证。
 
 ## 待验证
 
-- 服务器 OS、GPU、驱动、RAM、持久化数据盘路径、可用空间、容器运行时和快照行为。
-  验证方法：完成服务器审计指南并更新服务器交接。
+- 服务器数据盘关机后的持久性、快照可用性和恢复行为。服务器 OS、GPU、驱动、RAM、
+  磁盘路径、可用空间和容器运行时已实测记录在 `docs/server_environment.zh-CN.md`，但
+  AutoDL 的保留行为未经测试。验证方法：停止并重启实例，确认
+  `/root/autodl-tmp/embodied` 完整保留。
+- Isaac Sim 6.0.1 可用性。从 `pypi.nvidia.com` 的 pip 安装很慢，尚未演示 headless
+  场景、ROS2 bridge 或 1000 步运行。验证方法：执行第 1 周 headless 验收目标，并记录
+  启动时间、RTF 和显存占用。
+- 实测 50 GB 持久盘是否足够容纳 Isaac Sim 加数据集和 checkpoint。验证方法：清理
+  `cache/pip` 后测量 Isaac Sim 实际占用，再据剩余空间规划第 5-6 周数据方案。
 - 实际机器人资产组合。当前示例为 Franka/Panda 加 Allegro Hand，但在服务器资产和
   许可证检查通过前不会冻结。
 - 实体摄像头可用性和服务器 MediaPipe/HaMeR 环境。视频帧传输已在本地验证，但代表性
@@ -115,14 +143,19 @@
 - `/` 可用空间低于 3 GiB 时停止本地项目进程。
 - `/home` 至少保留 15 GiB；本地项目新增内容总量保持在 8 GiB 以下。
 - 不向公网暴露原始 ROS2 DDS。
-- 服务器持久化数据盘和恢复行为通过验证前，不开始 Isaac Sim、HaMeR/MANO、数据集
-  或训练工作。
+- 服务器数据盘关机持久性和恢复行为通过验证前，不开始 HaMeR/MANO、数据集或训练
+  工作。
+- 服务器上所有会增长的路径都必须放在持久盘，绝不放在 30 GB `/` overlay。执行
+  `docs/server_environment.zh-CN.md` 中的空间阈值：可用低于 25% 告警，低于 15% 停止
+  启动新实验。
+- 服务器长任务必须运行在 `tmux` 中。实例没有 `systemd`，无法使用 user service。
 
 ## 下一步行动
 
-1. 在 RTX 4090 主机运行 `scripts/server_audit_readonly.sh` 并更新服务器交接。
-2. 在安装或下载大型内容前，验证持久化磁盘、容器 GPU、Isaac Sim 版本、资产许可证
-   和恢复行为。
+1. 确认 AutoDL 数据盘经过停止/启动周期后完好，然后清理 `cache/pip` 并按 50 GB 配额
+   测量 Isaac Sim 实际占用。
+2. 在下载 PyTorch、MediaPipe、HaMeR/MANO 或 LeRobot 之前，先针对驱动 CUDA 13.0 固定
+   资产许可证与 L4/L5 版本组合。
 3. 让选定重建后端只连接一次 `/visual/input/image_raw`，先验证带校验和记录的服务器
    视频，再测试实体摄像头。
 4. 用一个经过检查的服务器资产 manifest 替换 CPU 测试 manifest，然后实现真实 IK、

@@ -2,8 +2,8 @@
 
 # Hand2Robot project memory
 
-Last verified: 2026-08-08 (Asia/Shanghai)  
-Current milestone: local CPU prototype and switchable visual input verified; M5 server adaptation pending  
+Last verified: 2026-08-29 (Asia/Shanghai)  
+Current milestone: server L0-L2 environment verified on the RTX 4090 instance; Isaac Sim and reconstruction adaptation pending  
 Canonical remote: `https://github.com/feryZzza/Hand2Robot.git`
 
 This document is the concise, version-controlled memory for future work. It records verified
@@ -79,6 +79,26 @@ reproduction checklist.
   strict-timestamp `160x120` frames from an eight-frame generated MP4; evidence is in
   `runs/20260808_video_input_smoke_seed0/manifest.yaml`. Follow-up `f9f54da` makes `make doctor`
   verify visual Python dependencies and advertise video fallback when no camera is detected.
+- Server commit `f7a0daf` records the first verified GPU server facts. The read-only audit ran on
+  an AutoDL container with one RTX 4090 (24564 MiB, driver 580.105.08, driver CUDA 13.0),
+  128 logical Xeon 8358P cores, 1.0 TiB RAM, a 30 GB `/` overlay, and an XFS persistent volume at
+  `/root/autodl-tmp` measured at **50 GB**, not the 300 GB assumed earlier. There is no Docker,
+  no Podman, no `systemd`, and no `/dev/video*` device. Measured values are in
+  `docs/server_environment.md`; evidence is under
+  `/root/autodl-tmp/embodied/artifacts/audit/`.
+- Layers L0-L2 are installed and verified on the server: driver and GPU, the L1 tools, and ROS2
+  Humble desktop with colcon, rosbag2, tf2, cv_bridge and OpenCV 4.5.4 built against the Ubuntu
+  system Python 3.10.12 ABI. All nine repository checks pass there: `doctor.sh` exits 0 with
+  visual input dependencies OK, 66 unit tests pass, colcon builds three packages, and the local,
+  recorded, video-input, bag-replay and three prototype smokes reproduce the same counts,
+  sequences and diagnostics the local baseline claims.
+- `scripts/server_ros2_env.sh` is required on the server because Miniconda's base `python3`
+  precedes `/usr/bin` on `PATH` and hides `cv2`, `cv_bridge` and `rclpy` from ROS2. It puts the
+  system interpreter first and pins DDS to `ROS_LOCALHOST_ONLY=1` on domain 72.
+- A fourth server Conda environment, `h2r-sim` on Python 3.12.14, exists because Isaac Sim 6.0.1
+  requires Python 3.12 and cannot share the 3.10 environments ROS2 depends on. The other three
+  server environments (`h2r-core`, `h2r-reconstruction`, `h2r-policy`) remain Python 3.10.20 with
+  only Python, pip, setuptools and wheel.
 
 ## Accepted decisions
 
@@ -101,16 +121,26 @@ reproduction checklist.
 
 ## Current objectives
 
-1. Obtain `docs/handoff/server_latest.md` populated from a read-only RTX 4090 server audit.
-2. Freeze one licensed robot/hand asset and implement its IK/collision execution adapter on the
+1. Confirm AutoDL data-volume persistence, snapshot, and recovery behavior before any long run.
+2. Finish the Isaac Sim 6.0.1 install in `h2r-sim` and prove a headless scene, then adopt a
+   retention policy that fits the measured 50 GB volume.
+3. Freeze one licensed robot/hand asset and implement its IK/collision execution adapter on the
    server without changing schema `0.1.0`.
-3. Connect one server MediaPipe or HaMeR reconstruction adapter to `/visual/input/image_raw`,
+4. Connect one server MediaPipe or HaMeR reconstruction adapter to `/visual/input/image_raw`,
    validating video mode before camera hardware is available.
 
 ## Pending verification
 
-- Server OS, GPU, driver, RAM, persistent data-disk path, free space, container runtime, and
-  snapshot behavior. Validation: complete the server audit guide and update the server handoff.
+- Server data-volume persistence across shutdown, snapshot availability, and recovery behavior.
+  Server OS, GPU, driver, RAM, disk paths, free space, and container runtime are now measured in
+  `docs/server_environment.md`, but AutoDL retention is untested. Validation: stop and restart the
+  instance, then confirm `/root/autodl-tmp/embodied` survives intact.
+- Isaac Sim 6.0.1 usability. The pip install into `h2r-sim` is slow from `pypi.nvidia.com` and no
+  headless scene, ROS2 bridge, or 1000-step run has been demonstrated. Validation: run the Week 1
+  headless acceptance target and record startup time, RTF, and GPU memory.
+- Whether the measured 50 GB persistent volume is sufficient for Isaac Sim plus datasets and
+  checkpoints. Validation: measure the installed Isaac Sim footprint after pruning `cache/pip`,
+  then size the Week 5-6 data plan against what remains.
 - Actual robot asset pair. Current example is Franka/Panda plus Allegro Hand, but this is not
   frozen until server asset and license checks pass.
 - Physical camera availability and server MediaPipe/HaMeR environment. Video frame transport is
@@ -124,14 +154,20 @@ reproduction checklist.
 - Stop local project processes when `/` has less than 3 GiB free.
 - Keep at least 15 GiB free on `/home`; keep total new local project content below 8 GiB.
 - Do not expose raw ROS2 DDS to the public internet.
-- Do not begin Isaac Sim, HaMeR/MANO, dataset, or training work until the server persistent disk
-  and recovery behavior are verified.
+- Do not begin HaMeR/MANO, dataset, or training work until the server data volume's shutdown
+  persistence and recovery behavior are verified.
+- Keep every growing path on the server's persistent volume, never the 30 GB `/` overlay. Apply
+  the space thresholds in `docs/server_environment.md`: warn below 25% free, stop new experiments
+  below 15%.
+- Run long server jobs under `tmux`. The instance has no `systemd`, so user services are not
+  available.
 
 ## Next actions
 
-1. Run `scripts/server_audit_readonly.sh` on the RTX 4090 host and update the server handoff.
-2. Verify persistent disk, container GPU, Isaac Sim version, asset licenses, and recovery before
-   installing or downloading anything large.
+1. Confirm the AutoDL data volume survives a stop/start cycle, then prune `cache/pip` and measure
+   the installed Isaac Sim footprint against the 50 GB quota.
+2. Freeze asset licenses and the L4/L5 version set against driver CUDA 13.0 before downloading
+   PyTorch, MediaPipe, HaMeR/MANO, or LeRobot.
 3. Connect the selected reconstruction backend once to `/visual/input/image_raw` and validate a
    checksum-recorded server video before testing a physical camera.
 4. Replace the CPU test manifest with one checked server asset manifest, then implement actual IK,
