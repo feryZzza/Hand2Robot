@@ -3,7 +3,7 @@
 # Hand2Robot 项目记忆
 
 最后验证：2026-08-29（Asia/Shanghai）  
-当前里程碑：RTX 4090 实例上服务器 L0-L2 环境已验证；Isaac Sim 与重建适配待完成  
+当前里程碑：RTX 4090 实例上服务器 L0-L5 环境已验证，含 Isaac Sim headless 运行；机器人资产与 ROS2 bridge 待完成  
 规范远程仓库：`https://github.com/feryZzza/Hand2Robot.git`
 
 本文件是供后续工作使用的简洁、受版本控制的项目记忆。它记录已验证事实和当前决策，
@@ -89,8 +89,29 @@
   把系统解释器放在最前面，并把 DDS 固定为 `ROS_LOCALHOST_ONLY=1` 与 domain 72。
 - 新增第四个服务器 Conda 环境 `h2r-sim`（Python 3.12.14），原因是 Isaac Sim 6.0.1 要求
   Python 3.12，无法与 ROS2 依赖的 3.10 环境共用。另外三个服务器环境
-  （`h2r-core`、`h2r-reconstruction`、`h2r-policy`）仍为 Python 3.10.20，且只含
-  Python、pip、setuptools 和 wheel。
+  （`h2r-core`、`h2r-reconstruction`、`h2r-policy`）仍为 Python 3.10.20。
+- 服务器 L3 到 L5 层已安装并验证。含 `[all,extscache,ros2]` 的 Isaac Sim 6.0.1.0 可以
+  headless 运行：`scripts/run_sim_headless_check.py --steps 1000` 报告启动 10.8 s、
+  1000 步耗时 3.26 s（306.9 steps/s）、立方体静止在 0.1 m、状态有限，Warp 1.13.0 运行在
+  4090 上（sm_89，CUDA Toolkit 12.9 对应驱动 13.0）。证据位于
+  `/root/autodl-tmp/embodied/artifacts/sim_headless/`。该检查加载的是基本几何体而非
+  机器人资产，因此不能作为关节名、IK 或碰撞的证据。
+- `h2r-reconstruction` 包含 torch 2.9.1+cu128、MediaPipe 0.10.21、OpenCV 4.11.0.86 和
+  numpy 1.26.4；MediaPipe 手部图在 4090 上通过 EGL 加载，并具备预期的 21 关节契约。
+  `h2r-policy` 包含 LeRobot 0.4.4、diffusers 0.35.2、gymnasium 1.3.0、zarr、h5py 和
+  wandb，均可导入且 GPU 矩阵乘法结果有限。OpenCV 固定在 4.11.0.86，因为 MediaPipe
+  0.10.21 要求 `numpy<2`，而 opencv-python 4.12 要求 `numpy>=2`。
+- `scripts/server_sim_env.sh` 是 Isaac Sim 入口脚本。它以 `OMNI_KIT_ACCEPT_EULA=YES`
+  记录用户在 2026-08-29 对 NVIDIA Omniverse 许可协议的接受；缺少它时每次 Kit 启动都会
+  停在交互提示上。它绝不能与 `scripts/server_ros2_env.sh` 在同一个 shell 中 source。
+- Isaac Sim 从 `pypi.nvidia.cn` 安装，这是 `pypi.nvidia.com` 通过 301 重定向返回的
+  主机。逐包跟随跳转的速率是 263 KB/s，90 分钟后仍未完成；直连该主机达到 11 MB/s，
+  约 15 分钟完成。两种方式下 pip 都校验 NVIDIA 索引哈希。国内 PyPI 镜像对这些版本只有
+  857 字节的存根包。
+- 四个环境占用 50 GB 数据盘中的 38 GB，仅 Isaac Sim 就是 25 GB。由于
+  `h2r-reconstruction` 与 `h2r-policy` 固定同一个 torch 2.9.1+cu128，二者完全相同的
+  `nvidia/` 和 `triton/` 共享库已通过硬链接合并，回收 4.81 GiB；之后四个环境都在 GPU 上
+  重新验证通过。在任一环境重装 torch 会破坏共享。
 
 ## 已接受决策
 
@@ -112,8 +133,8 @@
 ## 当前目标
 
 1. 在启动任何长任务前，确认 AutoDL 数据盘的持久性、快照和恢复行为。
-2. 在 `h2r-sim` 中完成 Isaac Sim 6.0.1 安装并验证 headless 场景，随后制定与实测
-   50 GB 数据盘相匹配的保留策略。
+2. 跨 Python 3.12/3.10 边界把 Isaac Sim 桥接到 ROS2 Humble 工作区，并制定与 50 GB 盘上
+   剩余约 13 GB 相匹配的保留策略。
 3. 冻结一个有许可证的机器人/手部资产，并在不改变 schema `0.1.0` 的情况下实现其
    IK/碰撞执行适配器。
 4. 把一个服务器 MediaPipe 或 HaMeR 重建适配器连接到 `/visual/input/image_raw`，先于
@@ -125,11 +146,12 @@
   磁盘路径、可用空间和容器运行时已实测记录在 `docs/server_environment.zh-CN.md`，但
   AutoDL 的保留行为未经测试。验证方法：停止并重启实例，确认
   `/root/autodl-tmp/embodied` 完整保留。
-- Isaac Sim 6.0.1 可用性。从 `pypi.nvidia.com` 的 pip 安装很慢，尚未演示 headless
-  场景、ROS2 bridge 或 1000 步运行。验证方法：执行第 1 周 headless 验收目标，并记录
-  启动时间、RTF 和显存占用。
-- 实测 50 GB 持久盘是否足够容纳 Isaac Sim 加数据集和 checkpoint。验证方法：清理
-  `cache/pip` 后测量 Isaac Sim 实际占用，再据剩余空间规划第 5-6 周数据方案。
+- Isaac Sim 的 ROS2 bridge。`isaacsim-ros2` 已安装，但尚无桥接 topic 跨越 Python
+  3.12/3.10 边界。验证方法：在 Kit 场景与 ROS2 Humble 工作区之间发布并接收一个 topic。
+- 长时间运行的稳定性。目前只验证了有界的 1000 步运行。验证方法：执行 30 分钟 headless
+  长稳和五分钟连续 smoke，并记录资源增长。
+- 剩余约 13 GB 空间是否足够容纳数据集和 checkpoint。验证方法：按实测可用空间规划
+  第 5-6 周数据方案，然后设定保留上限。
 - 实际机器人资产组合。当前示例为 Franka/Panda 加 Allegro Hand，但在服务器资产和
   许可证检查通过前不会冻结。
 - 实体摄像头可用性和服务器 MediaPipe/HaMeR 环境。视频帧传输已在本地验证，但代表性
@@ -145,6 +167,8 @@
 - 不向公网暴露原始 ROS2 DDS。
 - 服务器数据盘关机持久性和恢复行为通过验证前，不开始 HaMeR/MANO、数据集或训练
   工作。
+- 不要在 `h2r-reconstruction` 或 `h2r-policy` 中重装 torch。这会破坏二者相同 CUDA 库的
+  硬链接共享，在只剩约 13 GB 的数据盘上重新占回 4.81 GiB。
 - 服务器上所有会增长的路径都必须放在持久盘，绝不放在 30 GB `/` overlay。执行
   `docs/server_environment.zh-CN.md` 中的空间阈值：可用低于 25% 告警，低于 15% 停止
   启动新实验。
@@ -152,10 +176,9 @@
 
 ## 下一步行动
 
-1. 确认 AutoDL 数据盘经过停止/启动周期后完好，然后清理 `cache/pip` 并按 50 GB 配额
-   测量 Isaac Sim 实际占用。
-2. 在下载 PyTorch、MediaPipe、HaMeR/MANO 或 LeRobot 之前，先针对驱动 CUDA 13.0 固定
-   资产许可证与 L4/L5 版本组合。
+1. 在启动任何长任务前，确认 AutoDL 数据盘经过停止/启动周期后完好。
+2. 在 Isaac Sim Kit 场景与 ROS2 Humble 工作区之间交换一个桥接 ROS2 topic，随后执行
+   30 分钟长稳和五分钟连续 smoke。
 3. 让选定重建后端只连接一次 `/visual/input/image_raw`，先验证带校验和记录的服务器
    视频，再测试实体摄像头。
 4. 用一个经过检查的服务器资产 manifest 替换 CPU 测试 manifest，然后实现真实 IK、

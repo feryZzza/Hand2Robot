@@ -3,10 +3,10 @@
 # GPU server bootstrap boundary
 
 The read-only audit has run on the RTX 4090 instance. Measured values are in
-[`docs/server_environment.md`](server_environment.md); layers L0 through L2 are verified there.
-This file remains the gate for anything larger. Do not install HaMeR/MANO, datasets, or training
-environments until their versions are frozen against the measured driver and the **50 GB**
-persistent volume.
+[`docs/server_environment.md`](server_environment.md); layers L0 through L5 are verified there,
+including a headless Isaac Sim run. This file remains the gate for anything larger. Roughly 13 GB
+of the **50 GB** persistent volume is left, so do not install HaMeR/MANO model files or datasets
+until their licenses are accepted, versions frozen, and a retention policy is set.
 
 To re-audit, or to bring up another server, run:
 

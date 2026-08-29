@@ -3,7 +3,7 @@
 # Hand2Robot project memory
 
 Last verified: 2026-08-29 (Asia/Shanghai)  
-Current milestone: server L0-L2 environment verified on the RTX 4090 instance; Isaac Sim and reconstruction adaptation pending  
+Current milestone: server L0-L5 environment verified on the RTX 4090 instance, including a headless Isaac Sim run; robot asset and ROS2 bridge pending  
 Canonical remote: `https://github.com/feryZzza/Hand2Robot.git`
 
 This document is the concise, version-controlled memory for future work. It records verified
@@ -97,8 +97,30 @@ reproduction checklist.
   system interpreter first and pins DDS to `ROS_LOCALHOST_ONLY=1` on domain 72.
 - A fourth server Conda environment, `h2r-sim` on Python 3.12.14, exists because Isaac Sim 6.0.1
   requires Python 3.12 and cannot share the 3.10 environments ROS2 depends on. The other three
-  server environments (`h2r-core`, `h2r-reconstruction`, `h2r-policy`) remain Python 3.10.20 with
-  only Python, pip, setuptools and wheel.
+  server environments (`h2r-core`, `h2r-reconstruction`, `h2r-policy`) remain Python 3.10.20.
+- Layers L3 through L5 are installed and verified on the server. Isaac Sim 6.0.1.0 with
+  `[all,extscache,ros2]` runs headless: `scripts/run_sim_headless_check.py --steps 1000` reports
+  10.8 s startup, 1000 steps in 3.26 s (306.9 steps/s), a cuboid settled at 0.1 m, and finite
+  state, with Warp 1.13.0 on the 4090 (sm_89, CUDA Toolkit 12.9 against driver 13.0). Evidence is
+  in `/root/autodl-tmp/embodied/artifacts/sim_headless/`. The check loads a primitive, not a robot
+  asset, so it is not evidence for joint names, IK, or collisions.
+- `h2r-reconstruction` has torch 2.9.1+cu128, MediaPipe 0.10.21, OpenCV 4.11.0.86 and numpy
+  1.26.4; the MediaPipe hand graph loads over EGL on the 4090 with the expected 21-landmark
+  contract. `h2r-policy` has LeRobot 0.4.4, diffusers 0.35.2, gymnasium 1.3.0, zarr, h5py and
+  wandb, all importing with a finite GPU matmul. OpenCV is pinned to 4.11.0.86 because MediaPipe
+  0.10.21 requires `numpy<2` while opencv-python 4.12 requires `numpy>=2`.
+- `scripts/server_sim_env.sh` is the Isaac Sim entry point. It carries the user's 2026-08-29
+  acceptance of the NVIDIA Omniverse License Agreement as `OMNI_KIT_ACCEPT_EULA=YES`, without
+  which every Kit bootstrap blocks on an interactive prompt. It must never be sourced into the
+  same shell as `scripts/server_ros2_env.sh`.
+- Isaac Sim installs from `pypi.nvidia.cn`, the host `pypi.nvidia.com` returns by 301 redirect.
+  Following the redirect per package ran at 263 KB/s and had not finished after 90 minutes; the
+  direct host reached 11 MB/s and completed in about 15. pip verified NVIDIA index hashes either
+  way. National PyPI mirrors carry only 857-byte stub packages for these releases.
+- The four environments occupy 38 GB of the 50 GB volume, Isaac Sim alone 25 GB. Because
+  `h2r-reconstruction` and `h2r-policy` pin the same torch 2.9.1+cu128, their identical `nvidia/`
+  and `triton/` shared objects are hardlinked, reclaiming 4.81 GiB; all four environments were
+  re-verified on GPU afterwards. Reinstalling torch in either breaks the sharing.
 
 ## Accepted decisions
 
@@ -122,8 +144,8 @@ reproduction checklist.
 ## Current objectives
 
 1. Confirm AutoDL data-volume persistence, snapshot, and recovery behavior before any long run.
-2. Finish the Isaac Sim 6.0.1 install in `h2r-sim` and prove a headless scene, then adopt a
-   retention policy that fits the measured 50 GB volume.
+2. Bridge Isaac Sim to the ROS2 Humble workspace across the Python 3.12/3.10 boundary, and adopt a
+   retention policy that fits the roughly 13 GB left on the 50 GB volume.
 3. Freeze one licensed robot/hand asset and implement its IK/collision execution adapter on the
    server without changing schema `0.1.0`.
 4. Connect one server MediaPipe or HaMeR reconstruction adapter to `/visual/input/image_raw`,
@@ -135,12 +157,13 @@ reproduction checklist.
   Server OS, GPU, driver, RAM, disk paths, free space, and container runtime are now measured in
   `docs/server_environment.md`, but AutoDL retention is untested. Validation: stop and restart the
   instance, then confirm `/root/autodl-tmp/embodied` survives intact.
-- Isaac Sim 6.0.1 usability. The pip install into `h2r-sim` is slow from `pypi.nvidia.com` and no
-  headless scene, ROS2 bridge, or 1000-step run has been demonstrated. Validation: run the Week 1
-  headless acceptance target and record startup time, RTF, and GPU memory.
-- Whether the measured 50 GB persistent volume is sufficient for Isaac Sim plus datasets and
-  checkpoints. Validation: measure the installed Isaac Sim footprint after pruning `cache/pip`,
-  then size the Week 5-6 data plan against what remains.
+- The Isaac Sim ROS2 bridge. `isaacsim-ros2` is installed but no bridged topic has crossed the
+  Python 3.12/3.10 boundary. Validation: publish and receive one topic between a Kit scene and the
+  ROS2 Humble workspace.
+- Long-run stability. Only bounded 1000-step runs are verified. Validation: run the 30-minute
+  headless soak and the five-minute continuous smoke, recording resource growth.
+- Whether roughly 13 GB of remaining volume is sufficient for datasets and checkpoints.
+  Validation: size the Week 5-6 data plan against measured free space, then set retention limits.
 - Actual robot asset pair. Current example is Franka/Panda plus Allegro Hand, but this is not
   frozen until server asset and license checks pass.
 - Physical camera availability and server MediaPipe/HaMeR environment. Video frame transport is
@@ -156,6 +179,8 @@ reproduction checklist.
 - Do not expose raw ROS2 DDS to the public internet.
 - Do not begin HaMeR/MANO, dataset, or training work until the server data volume's shutdown
   persistence and recovery behavior are verified.
+- Do not reinstall torch in `h2r-reconstruction` or `h2r-policy`. That breaks the hardlink sharing
+  of their identical CUDA libraries and costs back 4.81 GiB on a volume with roughly 13 GB free.
 - Keep every growing path on the server's persistent volume, never the 30 GB `/` overlay. Apply
   the space thresholds in `docs/server_environment.md`: warn below 25% free, stop new experiments
   below 15%.
@@ -164,10 +189,9 @@ reproduction checklist.
 
 ## Next actions
 
-1. Confirm the AutoDL data volume survives a stop/start cycle, then prune `cache/pip` and measure
-   the installed Isaac Sim footprint against the 50 GB quota.
-2. Freeze asset licenses and the L4/L5 version set against driver CUDA 13.0 before downloading
-   PyTorch, MediaPipe, HaMeR/MANO, or LeRobot.
+1. Confirm the AutoDL data volume survives a stop/start cycle before starting anything long.
+2. Exchange one bridged ROS2 topic between an Isaac Sim Kit scene and the ROS2 Humble workspace,
+   then run the 30-minute soak and five-minute continuous smoke.
 3. Connect the selected reconstruction backend once to `/visual/input/image_raw` and validate a
    checksum-recorded server video before testing a physical camera.
 4. Replace the CPU test manifest with one checked server asset manifest, then implement actual IK,

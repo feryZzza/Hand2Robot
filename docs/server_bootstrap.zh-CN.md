@@ -3,9 +3,10 @@
 # GPU 服务器启动边界
 
 只读审计已在 RTX 4090 实例上执行。实测值见
-[`docs/server_environment.zh-CN.md`](server_environment.zh-CN.md)，其中 L0 到 L2 层已验证。
-本文件仍然是更大规模安装的门槛：在针对实测驱动和 **50 GB** 持久盘固定版本之前，
-不得安装 HaMeR/MANO、数据集或训练环境。
+[`docs/server_environment.zh-CN.md`](server_environment.zh-CN.md)，其中 L0 到 L5 层已验证，
+包含一次 headless Isaac Sim 运行。本文件仍然是更大规模安装的门槛：**50 GB** 持久盘只剩
+约 13 GB，因此在接受许可、固定版本并设定保留策略之前，不得安装 HaMeR/MANO 模型文件或
+数据集。
 
 重新审计或部署另一台服务器时，运行：
 
