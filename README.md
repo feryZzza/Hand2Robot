@@ -111,6 +111,7 @@ execution remain gated by the server audit.
 - [Switchable camera/video input](docs/visual_input.md)
 - [Local reproduction](docs/reproduction.md)
 - [Server bootstrap boundary](docs/server_bootstrap.md)
+- [Measured server environment](docs/server_environment.md)
 - [Architecture decisions](docs/decisions/README.md)
 - [Local/server handoff](docs/handoff/README.md)
 

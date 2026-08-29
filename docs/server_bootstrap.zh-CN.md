@@ -2,17 +2,26 @@
 
 # GPU 服务器启动边界
 
-目前没有任何服务器事实经过验证。在只读审计确认 GPU、持久化数据盘、可用空间、
-容器运行时和恢复模型前，不得安装 Isaac Sim、HaMeR/MANO、数据集或训练环境。
+只读审计已在 RTX 4090 实例上执行。实测值见
+[`docs/server_environment.zh-CN.md`](server_environment.zh-CN.md)，其中 L0 到 L2 层已验证。
+本文件仍然是更大规模安装的门槛：在针对实测驱动和 **50 GB** 持久盘固定版本之前，
+不得安装 HaMeR/MANO、数据集或训练环境。
 
-在服务器上检出同一仓库并运行：
+重新审计或部署另一台服务器时，运行：
 
 ```bash
-git switch work/server
 ./scripts/server_audit_readonly.sh | tee local_data/server_audit.txt
 ```
 
-审查输出，并用实测值填写 `docs/handoff/server_latest.md`。任何大型安装前必须冻结：
+审查输出，并用实测值填写 `docs/handoff/server_latest.md`。随后在任何 ROS2 或 colcon
+工作前 source 环境入口脚本；否则 Miniconda base 的 `python3` 会让 ROS2 找不到
+`cv2`、`cv_bridge` 和 `rclpy`：
+
+```bash
+source scripts/server_ros2_env.sh
+```
+
+任何大型安装前必须冻结：
 
 1. 持久化项目/数据/缓存路径及最小可用空间策略；
 2. NVIDIA 驱动、GPU、容器运行时及容器 GPU 访问；

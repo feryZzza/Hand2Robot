@@ -2,19 +2,27 @@
 
 # GPU server bootstrap boundary
 
-No server facts have been verified yet. Do not install Isaac Sim, HaMeR/MANO, datasets, or
-training environments until the read-only audit proves the GPU, persistent data disk, free
-space, container runtime, and recovery model.
+The read-only audit has run on the RTX 4090 instance. Measured values are in
+[`docs/server_environment.md`](server_environment.md); layers L0 through L2 are verified there.
+This file remains the gate for anything larger. Do not install HaMeR/MANO, datasets, or training
+environments until their versions are frozen against the measured driver and the **50 GB**
+persistent volume.
 
-On the server, check out the same repository and run:
+To re-audit, or to bring up another server, run:
 
 ```bash
-git switch work/server
 ./scripts/server_audit_readonly.sh | tee local_data/server_audit.txt
 ```
 
-Review the output and populate `docs/handoff/server_latest.md` with measured values. Before any
-large install, freeze:
+Review the output and populate `docs/handoff/server_latest.md` with measured values. Then source
+the ROS2 entry point before any ROS2 or colcon work; the Miniconda base `python3` otherwise hides
+`cv2`, `cv_bridge`, and `rclpy` from ROS2:
+
+```bash
+source scripts/server_ros2_env.sh
+```
+
+Before any large install, freeze:
 
 1. the persistent project/data/cache paths and minimum free-space policy;
 2. NVIDIA driver, GPU, container runtime, and container GPU access;

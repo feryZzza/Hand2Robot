@@ -106,6 +106,7 @@ Panda/Allegro 命令接口；服务器资产选择、IK、碰撞检查和 Isaac 
 - [可切换的摄像头/视频输入](docs/visual_input.zh-CN.md)
 - [本地复现](docs/reproduction.zh-CN.md)
 - [服务器启动边界](docs/server_bootstrap.zh-CN.md)
+- [实测服务器环境](docs/server_environment.zh-CN.md)
 - [架构决策](docs/decisions/README.zh-CN.md)
 - [本地/服务器交接](docs/handoff/README.zh-CN.md)
 
