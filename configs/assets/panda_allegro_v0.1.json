@@ -21,13 +21,57 @@
       "panda_joint6",
       "panda_joint7"
     ],
-    "joint_position_min_rad": [-2.8973, -1.7628, -2.8973, -3.0718, -2.8973, -0.0175, -2.8973],
-    "joint_position_max_rad": [2.8973, 1.7628, 2.8973, -0.0698, 2.8973, 3.7525, 2.8973],
-    "joint_max_velocity_rad_s": [2.175, 2.175, 2.175, 2.175, 2.61, 2.61, 2.61],
-    "joint_max_effort_nm": [87.0, 87.0, 87.0, 87.0, 12.0, 12.0, 12.0],
-    "gripper_joint_names": ["panda_finger_joint1", "panda_finger_joint2"],
-    "gripper_position_min_m": [0.0, 0.0],
-    "gripper_position_max_m": [0.04, 0.04]
+    "joint_position_min_rad": [
+      -2.8973,
+      -1.7628,
+      -2.8973,
+      -3.0718,
+      -2.8973,
+      -0.0175,
+      -2.8973
+    ],
+    "joint_position_max_rad": [
+      2.8973,
+      1.7628,
+      2.8973,
+      -0.0698,
+      2.8973,
+      3.7525,
+      2.8973
+    ],
+    "joint_max_velocity_rad_s": [
+      2.175,
+      2.175,
+      2.175,
+      2.175,
+      2.61,
+      2.61,
+      2.61
+    ],
+    "joint_max_effort_nm": [
+      87.0,
+      87.0,
+      87.0,
+      87.0,
+      12.0,
+      12.0,
+      12.0
+    ],
+    "gripper_joint_names": [
+      "panda_finger_joint1",
+      "panda_finger_joint2"
+    ],
+    "gripper_position_min_m": [
+      0.0,
+      0.0
+    ],
+    "gripper_position_max_m": [
+      0.04,
+      0.04
+    ],
+    "drive_stiffness_nm_rad": 100000.0,
+    "drive_damping_nm_s_rad": 10000.0,
+    "drive_note": "Measured, not guessed. At these gains the 7 arm joints hold a commanded posture for 600 steps with a peak tracking error of 0.00154 rad (0.09 degrees), inside limits and finite. Two orders of magnitude lower (600 Nm/rad) let gravity drag joint 2 onto its limit for a 1.76 rad error, so this magnitude is required."
   },
   "hand": {
     "name": "allegro_right",
@@ -41,43 +85,152 @@
     "finger_count": 4,
     "joints_per_finger": 4,
     "joint_names": [
-      "joint_0_0", "joint_1_0", "joint_2_0", "joint_3_0",
-      "joint_4_0", "joint_5_0", "joint_6_0", "joint_7_0",
-      "joint_8_0", "joint_9_0", "joint_10_0", "joint_11_0",
-      "joint_12_0", "joint_13_0", "joint_14_0", "joint_15_0"
+      "joint_0_0",
+      "joint_1_0",
+      "joint_2_0",
+      "joint_3_0",
+      "joint_4_0",
+      "joint_5_0",
+      "joint_6_0",
+      "joint_7_0",
+      "joint_8_0",
+      "joint_9_0",
+      "joint_10_0",
+      "joint_11_0",
+      "joint_12_0",
+      "joint_13_0",
+      "joint_14_0",
+      "joint_15_0"
     ],
     "finger_groups": {
-      "index": ["joint_0_0", "joint_1_0", "joint_2_0", "joint_3_0"],
-      "middle": ["joint_4_0", "joint_5_0", "joint_6_0", "joint_7_0"],
-      "little": ["joint_8_0", "joint_9_0", "joint_10_0", "joint_11_0"],
-      "thumb": ["joint_12_0", "joint_13_0", "joint_14_0", "joint_15_0"]
+      "index": [
+        "joint_0_0",
+        "joint_1_0",
+        "joint_2_0",
+        "joint_3_0"
+      ],
+      "middle": [
+        "joint_4_0",
+        "joint_5_0",
+        "joint_6_0",
+        "joint_7_0"
+      ],
+      "little": [
+        "joint_8_0",
+        "joint_9_0",
+        "joint_10_0",
+        "joint_11_0"
+      ],
+      "thumb": [
+        "joint_12_0",
+        "joint_13_0",
+        "joint_14_0",
+        "joint_15_0"
+      ]
     },
-    "joint_role_per_finger": ["abduction", "mcp_flexion", "pip_flexion", "dip_flexion"],
+    "joint_role_per_finger": [
+      "abduction",
+      "mcp_flexion",
+      "pip_flexion",
+      "dip_flexion"
+    ],
     "joint_position_min_rad": [
-      -0.47, -0.196, -0.174, -0.227,
-      -0.47, -0.196, -0.174, -0.227,
-      -0.47, -0.196, -0.174, -0.227,
-      0.263, -0.105, -0.189, -0.162
+      -0.47,
+      -0.196,
+      -0.174,
+      -0.227,
+      -0.47,
+      -0.196,
+      -0.174,
+      -0.227,
+      -0.47,
+      -0.196,
+      -0.174,
+      -0.227,
+      0.263,
+      -0.105,
+      -0.189,
+      -0.162
     ],
     "joint_position_max_rad": [
-      0.47, 1.61, 1.709, 1.618,
-      0.47, 1.61, 1.709, 1.618,
-      0.47, 1.61, 1.709, 1.618,
-      1.396, 1.163, 1.644, 1.719
+      0.47,
+      1.61,
+      1.709,
+      1.618,
+      0.47,
+      1.61,
+      1.709,
+      1.618,
+      0.47,
+      1.61,
+      1.709,
+      1.618,
+      1.396,
+      1.163,
+      1.644,
+      1.719
     ],
     "joint_max_velocity_rad_s": [
-      3.14, 3.14, 3.14, 3.14,
-      3.14, 3.14, 3.14, 3.14,
-      3.14, 3.14, 3.14, 3.14,
-      3.14, 3.14, 3.14, 3.14
+      3.14,
+      3.14,
+      3.14,
+      3.14,
+      3.14,
+      3.14,
+      3.14,
+      3.14,
+      3.14,
+      3.14,
+      3.14,
+      3.14,
+      3.14,
+      3.14,
+      3.14,
+      3.14
     ],
     "joint_max_effort_nm": [
-      10.0, 10.0, 10.0, 10.0,
-      10.0, 10.0, 10.0, 10.0,
-      10.0, 10.0, 10.0, 10.0,
-      10.0, 10.0, 10.0, 10.0
+      10.0,
+      10.0,
+      10.0,
+      10.0,
+      10.0,
+      10.0,
+      10.0,
+      10.0,
+      10.0,
+      10.0,
+      10.0,
+      10.0,
+      10.0,
+      10.0,
+      10.0,
+      10.0
     ],
-    "no_thumb_abduction_note": "The thumb's first joint (joint_12_0) is a rotation with a strictly positive lower bound of 0.263 rad. A zero command is out of range for that joint, so a neutral pose must clamp to the limit rather than to zero."
+    "no_thumb_abduction_note": "The thumb's first joint (joint_12_0) is a rotation with a strictly positive lower bound of 0.263 rad. A zero command is out of range for that joint, so a neutral pose must clamp to the limit rather than to zero.",
+    "drive_stiffness_nm_rad": 10000.0,
+    "drive_damping_nm_s_rad": 1000.0,
+    "drive_note": "The upstream Allegro URDF declares no joint dynamics, so an explicit drive is required. At these gains the 12 finger joints hold their commanded pose inside limits for 600 steps.",
+    "physics_driven_joint_names": [
+      "joint_0_0",
+      "joint_1_0",
+      "joint_2_0",
+      "joint_3_0",
+      "joint_4_0",
+      "joint_5_0",
+      "joint_6_0",
+      "joint_7_0",
+      "joint_8_0",
+      "joint_9_0",
+      "joint_10_0",
+      "joint_11_0"
+    ],
+    "kinematic_only_joint_names": [
+      "joint_12_0",
+      "joint_13_0",
+      "joint_14_0",
+      "joint_15_0"
+    ],
+    "thumb_chain_defect": "The dex-urdf thumb chain joint_12_0 through joint_15_0 is not usable under physics in Isaac Sim 6.0.1.0. Left free it drifts from limits of about 1.5 rad to over 100 rad within 300 steps, and three of its joints already start outside their limits before the first physics step, which points at the thumb links' local joint poses disagreeing with the joint zero positions rather than at a tunable parameter. Ruled out by measurement: drive stiffness from 3 to 1e5 with matched damping (the same 4 joints fail at every value), solver position/velocity iteration counts of 64/16, collision geometry from visuals and convex decomposition, the USD Physics variant set to physx and to physics, run_multi_physics_conversion on and off, the usdsafe joint rename against the original file, and seeding a legal zero-velocity pose before stepping. The other 12 joints are stable in the same runs, so the defect is specific to this thumb chain. It is held at its neutral pose and excluded from dynamics until the chain is repaired or another hand asset is adopted; three-finger grasping remains available."
   },
   "notes": [
     "Assets live on the persistent data volume under datasets/raw/assets and are never committed to Git.",
