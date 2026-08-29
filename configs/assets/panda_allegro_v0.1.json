@@ -1,0 +1,87 @@
+{
+  "schema_version": "0.1.0",
+  "manifest_version": "0.1.0",
+  "status": "verified_import",
+  "description": "Franka Panda arm plus Allegro right hand, both imported and stepped in Isaac Sim 6.0.1.0 on the RTX 4090 server. Joint names, limits and velocities below are read from the URDF sources, not assumed.",
+  "arm": {
+    "name": "franka_panda",
+    "urdf_relative_path": "panda/robots/panda_arm_hand.urdf",
+    "urdf_sha256": "ad9f5298a4d1a375cf16824b0de4f0d1c7cc446597964b80aa639ca830e998a1",
+    "source": "bundled with isaacsim.asset.importer.urdf 6.0.1.0",
+    "license": "Apache-2.0 (franka_description as redistributed by NVIDIA Isaac Sim)",
+    "base_frame": "panda_link0",
+    "end_effector_frame": "panda_hand",
+    "fix_base": true,
+    "joint_names": [
+      "panda_joint1",
+      "panda_joint2",
+      "panda_joint3",
+      "panda_joint4",
+      "panda_joint5",
+      "panda_joint6",
+      "panda_joint7"
+    ],
+    "joint_position_min_rad": [-2.8973, -1.7628, -2.8973, -3.0718, -2.8973, -0.0175, -2.8973],
+    "joint_position_max_rad": [2.8973, 1.7628, 2.8973, -0.0698, 2.8973, 3.7525, 2.8973],
+    "joint_max_velocity_rad_s": [2.175, 2.175, 2.175, 2.175, 2.61, 2.61, 2.61],
+    "joint_max_effort_nm": [87.0, 87.0, 87.0, 87.0, 12.0, 12.0, 12.0],
+    "gripper_joint_names": ["panda_finger_joint1", "panda_finger_joint2"],
+    "gripper_position_min_m": [0.0, 0.0],
+    "gripper_position_max_m": [0.04, 0.04]
+  },
+  "hand": {
+    "name": "allegro_right",
+    "urdf_relative_path": "allegro_hand/allegro_hand_right_usdsafe.urdf",
+    "urdf_sha256": "c0b80e9f740514eb98407a8b6aaa887a964392c8b8003912f7bf9ab88d8c55c3",
+    "urdf_note": "usdsafe variant renames joint_N.M to joint_N_M because USD identifiers reject '.' and the converter would otherwise escape names into forms like tn__joint_00_nC. Geometry and limits are unchanged; the sha256 above is of the original upstream file.",
+    "source": "dexsuite/dex-urdf robots/hands/allegro_hand",
+    "license": "MIT (dex-urdf packaging); underlying Allegro description is BSD from Wonik Robotics",
+    "base_frame": "base_link",
+    "handedness": "right",
+    "finger_count": 4,
+    "joints_per_finger": 4,
+    "joint_names": [
+      "joint_0_0", "joint_1_0", "joint_2_0", "joint_3_0",
+      "joint_4_0", "joint_5_0", "joint_6_0", "joint_7_0",
+      "joint_8_0", "joint_9_0", "joint_10_0", "joint_11_0",
+      "joint_12_0", "joint_13_0", "joint_14_0", "joint_15_0"
+    ],
+    "finger_groups": {
+      "index": ["joint_0_0", "joint_1_0", "joint_2_0", "joint_3_0"],
+      "middle": ["joint_4_0", "joint_5_0", "joint_6_0", "joint_7_0"],
+      "little": ["joint_8_0", "joint_9_0", "joint_10_0", "joint_11_0"],
+      "thumb": ["joint_12_0", "joint_13_0", "joint_14_0", "joint_15_0"]
+    },
+    "joint_role_per_finger": ["abduction", "mcp_flexion", "pip_flexion", "dip_flexion"],
+    "joint_position_min_rad": [
+      -0.47, -0.196, -0.174, -0.227,
+      -0.47, -0.196, -0.174, -0.227,
+      -0.47, -0.196, -0.174, -0.227,
+      0.263, -0.105, -0.189, -0.162
+    ],
+    "joint_position_max_rad": [
+      0.47, 1.61, 1.709, 1.618,
+      0.47, 1.61, 1.709, 1.618,
+      0.47, 1.61, 1.709, 1.618,
+      1.396, 1.163, 1.644, 1.719
+    ],
+    "joint_max_velocity_rad_s": [
+      3.14, 3.14, 3.14, 3.14,
+      3.14, 3.14, 3.14, 3.14,
+      3.14, 3.14, 3.14, 3.14,
+      3.14, 3.14, 3.14, 3.14
+    ],
+    "joint_max_effort_nm": [
+      10.0, 10.0, 10.0, 10.0,
+      10.0, 10.0, 10.0, 10.0,
+      10.0, 10.0, 10.0, 10.0,
+      10.0, 10.0, 10.0, 10.0
+    ],
+    "no_thumb_abduction_note": "The thumb's first joint (joint_12_0) is a rotation with a strictly positive lower bound of 0.263 rad. A zero command is out of range for that joint, so a neutral pose must clamp to the limit rather than to zero."
+  },
+  "notes": [
+    "Assets live on the persistent data volume under datasets/raw/assets and are never committed to Git.",
+    "The Allegro hand has 4 joints per finger against the 21-joint human contract in docs/interfaces.md. The mapping from human joints to these 16 joints is a retargeting decision, recorded separately in configs/retargeting.",
+    "This manifest supersedes the five generic flexion degrees of freedom in configs/retargeting/cpu_prototype_v0.1.json, which ADR-0003 limits to a CPU test sink."
+  ]
+}
