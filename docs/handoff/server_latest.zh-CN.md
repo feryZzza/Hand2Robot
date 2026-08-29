@@ -111,6 +111,39 @@ torch 2.9.1+cu128，因此二者完全相同的 `nvidia/` 和 `triton/` 共享�
 当前没有阻塞项。本机准备验证服务器输入路径时，请提供一段短 rosbag 及其 SHA256、
 schema 版本和期望帧数，以便服务器用同一校验器回放。
 
+## 2026-08-30 的 M5 进展
+
+`work/server` 上的提交 `d007050`、`705dc10`、`7bb1057`。
+
+已完成并验证：
+
+- 资产已放到数据盘 `datasets/raw/assets`：Isaac Sim 自带的 Franka Panda，以及来自
+  dex-urdf 的 Allegro 右手。NVIDIA 云资产服务器返回 404 且 GitHub 不可达，手部资产
+  通过 `ghfast.top` 代理获取。
+- `scripts/audit_sim_assets.py` 用 manifest 校验仿真中的 articulation：臂 9 DOF、
+  手 16 DOF，零缺失关节、零多余关节、零限位偏差。
+- `hand2robot_core.dexterous_hand` 把 21 关节人手契约映射到 Allegro 的 16 个关节，
+  每指一个 abduction 加三段 flexion。新增 23 个测试；套件共 89 个全部通过。
+- `scripts/evaluate_arm_ik.py` 配合 Isaac Sim 的 Lula 求解器：在实测工作空间盒内
+  **729/729** 个末端位置全部求解成功，且都在 manifest 关节限位内。这纠正了一处猜测：
+  CPU 原型更宽的盒子只有 94.4%，失败点全在 Panda 的臂展边界上。
+- Panda 驱动增益实测为 1e5 Nm/rad 与 1e4 Nm*s/rad，600 步内保持指令姿态，峰值误差
+  0.00154 rad。
+
+受阻，但原因已定位：
+
+- dex-urdf 的 Allegro 手在 Isaac Sim 6.0.1.0 下无法用于物理仿真。其关节在 300 步内
+  从约 1.5 rad 的限位漂到超过 100 rad，且三个拇指关节在第一步物理之前就已越限。
+  Panda 在同一场景中稳定，因此这是资产特有的缺陷。
+- 已实测并否证十一种方案。完整清单在 manifest 的 `hand.thumb_chain_defect` 和提交
+  `7bb1057` 中。不要再从驱动调参重新开始。
+- 因此 `scripts/run_sim_execution_check.py` 报告手部越限。该失败是真实的，未被掩盖。
+  闭环的臂部分是可靠的。
+
+下一步：用 `scripts/audit_sim_assets.py` 评估替代手部资产，再改写手指分组。
+LEAP Hand（MIT，16 revolute 关节）和 SCHUNK SVH（Apache-2.0，20 关节）都已确认可从
+同一个 dex-urdf 仓库通过代理下载。
+
 ## 下一步
 
 先确认数据盘经过停止/启动周期后完好，然后推进第 1 周验收目标的其余部分：一个

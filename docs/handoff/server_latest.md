@@ -123,6 +123,47 @@ None blocking. When the local machine is ready to exercise the server input
 path, send a short rosbag with its SHA256, schema version, and expected frame
 count so the server can replay it against the same validator.
 
+## M5 progress at 2026-08-30
+
+Commits `d007050`, `705dc10`, `7bb1057` on `work/server`.
+
+Done and verified:
+
+- Assets staged on the data volume under `datasets/raw/assets`: the Franka Panda
+  bundled with Isaac Sim, and the Allegro right hand from dex-urdf. The NVIDIA
+  cloud asset server returns 404 and GitHub is unreachable, so the hand came
+  through the `ghfast.top` proxy.
+- `scripts/audit_sim_assets.py` confirms the manifest against the simulated
+  articulations: 9 arm DOF, 16 hand DOF, zero missing joints, zero unexpected
+  joints, zero limit mismatches.
+- `hand2robot_core.dexterous_hand` maps the 21-joint human contract onto 16
+  Allegro joints, one abduction plus three flexion stages per finger. 23 new
+  tests; the suite is 89 and passes.
+- `scripts/evaluate_arm_ik.py` with Isaac Sim's Lula solver: **729/729**
+  end-effector positions solved inside the measured workspace box, all within
+  the manifest joint limits. This corrected a guess: the CPU prototype's wider
+  box reached only 94.4%, with every failure on the Panda's reach boundary.
+- Panda drive gains measured at 1e5 Nm/rad and 1e4 Nm*s/rad, holding a commanded
+  posture over 600 steps with a 0.00154 rad peak error.
+
+Blocked, with the cause identified:
+
+- The dex-urdf Allegro hand is not usable under physics in Isaac Sim 6.0.1.0.
+  Its joints drift from limits of about 1.5 rad past 100 rad within 300 steps,
+  and three thumb joints start outside their limits before the first physics
+  step. The Panda is stable in the same scene, so the defect is asset-specific.
+- Eleven approaches were measured and ruled out. The full list is in the
+  manifest under `hand.thumb_chain_defect` and in commit `7bb1057`. Do not
+  restart from drive tuning.
+- `scripts/run_sim_execution_check.py` therefore reports the hand as out of
+  limits. That failure is real and is not suppressed. The arm half of the loop
+  is sound.
+
+Next: evaluate a replacement hand asset with `scripts/audit_sim_assets.py`
+before rewiring the finger groups. LEAP Hand (MIT, 16 revolute joints) and
+SCHUNK SVH (Apache-2.0, 20 joints) are both confirmed downloadable from the same
+dex-urdf repository through the proxy.
+
 ## Next step
 
 Confirm the data volume survives a stop/start cycle, then attempt the rest of the
