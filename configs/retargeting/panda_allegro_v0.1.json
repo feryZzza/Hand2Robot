@@ -1,0 +1,28 @@
+{
+  "schema_version": "0.1.0",
+  "asset_manifest": "configs/assets/panda_allegro_v0.1.json",
+  "output_frame": "robot_base",
+  "target_handedness": "right",
+  "target_palm_width_m": 0.085,
+  "minimum_palm_width_m": 0.02,
+  "workspace_min_m": [0.25, -0.40, 0.10],
+  "workspace_max_m": [0.58, 0.40, 0.60],
+  "workspace_note": "Measured, not assumed. scripts/evaluate_arm_ik.py solved 729/729 grid positions inside this box with Isaac Sim's Lula solver and the panda_hand frame, all within the manifest's joint limits. The wider box 0.25-0.65 x -0.40-0.40 x 0.10-0.70 reached only 94.4%: every failure sat on the z=0.70 top face or the x=0.65 far face, which is the Panda's reach limit rather than a solver defect. Evidence is under /root/autodl-tmp/embodied/artifacts/ik_eval/.",
+  "workspace_frame_note": "This box is expressed in the arm base frame and differs from the CPU prototype's box in cpu_prototype_v0.1.json, whose z range of 0.75-1.50 assumed a table-mounted human wrist rather than the Panda's own base.",
+  "end_effector_frame": "panda_hand",
+  "ik_solver": "lula",
+  "ik_min_success_rate": 0.95,
+  "max_ee_linear_velocity_m_s": 0.25,
+  "max_ee_angular_velocity_rad_s": 1.0,
+  "maximum_input_age_ms": 500.0,
+  "one_euro_filter": {
+    "min_cutoff_hz": 1.0,
+    "beta": 5.0,
+    "derivative_cutoff_hz": 1.0
+  },
+  "hand_mapping": {
+    "flexion_span_rad": [0.0, 1.5707963267948966],
+    "abduction_span_rad": [-0.5235987755982988, 0.5235987755982988],
+    "span_note": "Assumed working ranges of a human hand, not measured per subject: a finger joint bends from straight to roughly a right angle, and abduction stays within about 30 degrees of the palm forward axis. Both ends clamp, so an unusual hand saturates instead of commanding an out-of-limit joint."
+  }
+}
